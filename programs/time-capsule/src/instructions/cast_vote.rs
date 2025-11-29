@@ -18,7 +18,7 @@ pub fn handler(ctx: Context<CastVote>, vote: bool) -> Result<()> {
     // Validate voting period hasn't ended
     require!(
         clock.unix_timestamp < capsule.voting_end_timestamp,
-        TimeCapsuleError::VotingPeriodNotEnded
+        TimeCapsuleError::VotingPeriodEnded
     );
     
     // Initialize voter record

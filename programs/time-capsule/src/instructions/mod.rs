@@ -11,3 +11,6 @@ pub use cast_vote::*;
 pub use resolve_capsule::*;
 pub use claim::*;
 pub use cancel_capsule::*;
+pub mod add_stake;
+pub use add_stake::*;
+

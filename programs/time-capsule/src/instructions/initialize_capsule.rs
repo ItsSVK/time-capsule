@@ -2,6 +2,11 @@ use anchor_lang::{prelude::*, system_program::{System as SystemProgram}};
 use anchor_spl::{
     associated_token::AssociatedToken,
     token::{self, Mint, Token, TokenAccount},
+    metadata::{
+        create_metadata_accounts_v3,
+        mpl_token_metadata::types::DataV2,
+        CreateMetadataAccountsV3, Metadata,
+    },
 };
 
 use crate::state::*;
@@ -14,6 +19,8 @@ pub fn handler(
     open_timestamp: i64,
     voting_duration: i64,
     quorum: u64,
+    name: String,
+    symbol: String,
 ) -> Result<()> {
     let clock = Clock::get()?;
     
@@ -38,9 +45,8 @@ pub fn handler(
     capsule.nft_mint = nft_mint.key();
     capsule.metadata_uri = metadata_uri.clone();
     capsule.open_timestamp = open_timestamp;
-    capsule.voting_end_timestamp = open_timestamp
-        .checked_add(voting_duration)
-        .ok_or(TimeCapsuleError::ArithmeticOverflow)?;
+    capsule.voting_end_timestamp = 0; // Set when opened
+    capsule.voting_duration = voting_duration;
     capsule.status = CapsuleStatus::Active;
     capsule.yes_votes = 0;
     capsule.no_votes = 0;
@@ -71,6 +77,38 @@ pub fn handler(
     let signer = &[&seeds[..]];
     
     token::mint_to(cpi_context.with_signer(signer), 1)?;
+    
+    // Create NFT metadata
+    let metadata_ctx = CpiContext::new(
+        ctx.accounts.metadata_program.to_account_info(),
+        CreateMetadataAccountsV3 {
+            metadata: ctx.accounts.metadata_account.to_account_info(),
+            mint: ctx.accounts.nft_mint.to_account_info(),
+            mint_authority: ctx.accounts.nft_mint.to_account_info(),
+            payer: ctx.accounts.creator.to_account_info(),
+            update_authority: ctx.accounts.nft_mint.to_account_info(),
+            system_program: ctx.accounts.system_program.to_account_info(),
+            rent: ctx.accounts.rent.to_account_info(),
+        },
+    );
+    
+    let data_v2 = DataV2 {
+        name,
+        symbol,
+        uri: metadata_uri.clone(),
+        seller_fee_basis_points: 0,
+        creators: None,
+        collection: None,
+        uses: None,
+    };
+    
+    create_metadata_accounts_v3(
+        metadata_ctx.with_signer(signer),
+        data_v2,
+        false, // is_mutable
+        true,  // update_authority_is_signer
+        None,  // collection_details
+    )?;
     
     // Emit event
     emit!(CapsuleCreated {
@@ -115,6 +153,10 @@ pub struct InitializeCapsule<'info> {
         associated_token::authority = creator
     )]
     pub creator_nft_account: Account<'info, TokenAccount>,
+
+    /// CHECK: Metadata account for the NFT
+    #[account(mut)]
+    pub metadata_account: UncheckedAccount<'info>,
     
     #[account(mut)]
     pub creator: Signer<'info>,
@@ -122,5 +164,6 @@ pub struct InitializeCapsule<'info> {
     pub system_program: Program<'info, System>,
     pub token_program: Program<'info, Token>,
     pub associated_token_program: Program<'info, AssociatedToken>,
+    pub metadata_program: Program<'info, Metadata>,
     pub rent: Sysvar<'info, Rent>,
 }

@@ -20,6 +20,8 @@ pub mod time_capsule {
         open_timestamp: i64,
         voting_duration: i64,
         quorum: u64,
+        name: String,
+        symbol: String,
     ) -> Result<()> {
         instructions::initialize_capsule::handler(
             ctx,
@@ -27,6 +29,8 @@ pub mod time_capsule {
             open_timestamp,
             voting_duration,
             quorum,
+            name,
+            symbol,
         )
     }
 
@@ -53,5 +57,14 @@ pub mod time_capsule {
     /// Cancel capsule before it opens (creator only)
     pub fn cancel_capsule(ctx: Context<CancelCapsule>) -> Result<()> {
         instructions::cancel_capsule::handler(ctx)
+    }
+
+    pub fn add_stake(
+        ctx: Context<AddStake>,
+        amount: u64,
+        stake_destination: state::StakeDestination,
+        destination_address: Option<Pubkey>,
+    ) -> Result<()> {
+        instructions::add_stake::handler(ctx, amount, stake_destination, destination_address)
     }
 }

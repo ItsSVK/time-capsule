@@ -15,6 +15,8 @@ pub struct Capsule {
     pub open_timestamp: i64,
     /// Timestamp when voting period ends
     pub voting_end_timestamp: i64,
+    /// Duration of voting period in seconds
+    pub voting_duration: i64,
     /// Current status of the capsule
     pub status: CapsuleStatus,
     /// Number of yes votes
@@ -47,6 +49,7 @@ impl Capsule {
         (4 + Self::MAX_URI_LENGTH) + // metadata_uri
         8 + // open_timestamp
         8 + // voting_end_timestamp
+        8 + // voting_duration
         1 + // status
         8 + // yes_votes
         8 + // no_votes

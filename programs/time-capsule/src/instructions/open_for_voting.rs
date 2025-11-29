@@ -22,6 +22,7 @@ pub fn handler(ctx: Context<OpenForVoting>) -> Result<()> {
     
     // Update status
     capsule.status = CapsuleStatus::OpenForVoting;
+    capsule.voting_end_timestamp = clock.unix_timestamp.checked_add(capsule.voting_duration).ok_or(TimeCapsuleError::ArithmeticOverflow)?;
     
     // Emit event
     emit!(CapsuleOpened {

@@ -37,4 +37,10 @@ pub enum TimeCapsuleError {
     
     #[msg("Arithmetic overflow")]
     ArithmeticOverflow,
+
+    #[msg("Invalid stake amount")]
+    InvalidStakeAmount,
+
+    #[msg("Voting period has ended")]
+    VotingPeriodEnded,
 }

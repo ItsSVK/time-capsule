@@ -80,8 +80,8 @@ pub fn handler(ctx: Context<Claim>) -> Result<()> {
         let transfer_ctx = CpiContext::new_with_signer(
             ctx.accounts.token_program.to_account_info(),
             Transfer {
-                from: ctx.accounts.escrow_stake_account.as_ref().unwrap().to_account_info(),
-                to: ctx.accounts.recipient_stake_account.as_ref().unwrap().to_account_info(),
+                from: ctx.accounts.escrow_stake_account.to_account_info(),
+                to: ctx.accounts.recipient_stake_account.to_account_info(),
                 authority: escrow.to_account_info(),
             },
             signer,
@@ -116,11 +116,13 @@ pub struct Claim<'info> {
     )]
     pub escrow: Account<'info, Escrow>,
     
+    /// CHECK: Token account for escrow (only for SPL tokens)
     #[account(mut)]
-    pub escrow_stake_account: Option<Account<'info, TokenAccount>>,
+    pub escrow_stake_account: UncheckedAccount<'info>,
     
+    /// CHECK: Token account for recipient (only for SPL tokens)
     #[account(mut)]
-    pub recipient_stake_account: Option<Account<'info, TokenAccount>>,
+    pub recipient_stake_account: UncheckedAccount<'info>,
     
     /// CHECK: Validated in handler
     #[account(mut)]
