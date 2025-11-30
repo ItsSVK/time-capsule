@@ -7,7 +7,7 @@ pub mod state;
 
 use instructions::*;
 
-declare_id!("CdnFqzmdDY1ArXRz1QbFbU1CtceN7xsz3mftJyosjM9u");
+declare_id!("CqDKXwZffTzXQYsZvaYGTwKwGhdN6sHjMdQTVo5QHx54");
 
 #[program]
 pub mod time_capsule {
@@ -66,5 +66,10 @@ pub mod time_capsule {
         destination_address: Option<Pubkey>,
     ) -> Result<()> {
         instructions::add_stake::handler(ctx, amount, stake_destination, destination_address)
+    }
+
+    /// Close a capsule account and reclaim rent (creator only, after resolution/cancellation)
+    pub fn close_capsule(ctx: Context<CloseCapsule>) -> Result<()> {
+        instructions::close_capsule::handler(ctx)
     }
 }

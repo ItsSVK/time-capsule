@@ -53,3 +53,11 @@ pub struct CapsuleCancelled {
     pub creator: Pubkey,
     pub cancelled_at: i64,
 }
+
+/// Emitted when a capsule account is closed
+#[event]
+pub struct CapsuleClosed {
+    pub capsule: Pubkey,
+    pub creator: Pubkey,
+    pub closed_at: i64,
+}

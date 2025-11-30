@@ -1,0 +1,1473 @@
+{
+  "address": "CqDKXwZffTzXQYsZvaYGTwKwGhdN6sHjMdQTVo5QHx54",
+  "metadata": {
+    "name": "time_capsule",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "add_stake",
+      "discriminator": [
+        58,
+        135,
+        189,
+        105,
+        160,
+        120,
+        165,
+        224
+      ],
+      "accounts": [
+        {
+          "name": "capsule",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  112,
+                  115,
+                  117,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "creator"
+              },
+              {
+                "kind": "account",
+                "path": "capsule.open_timestamp",
+                "account": "Capsule"
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "capsule"
+              }
+            ]
+          }
+        },
+        {
+          "name": "stake_mint"
+        },
+        {
+          "name": "creator",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "capsule"
+          ]
+        },
+        {
+          "name": "creator_stake_account",
+          "writable": true
+        },
+        {
+          "name": "escrow_stake_account",
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "stake_destination",
+          "type": {
+            "defined": {
+              "name": "StakeDestination"
+            }
+          }
+        },
+        {
+          "name": "destination_address",
+          "type": {
+            "option": "pubkey"
+          }
+        }
+      ]
+    },
+    {
+      "name": "cancel_capsule",
+      "docs": [
+        "Cancel capsule before it opens (creator only)"
+      ],
+      "discriminator": [
+        27,
+        143,
+        220,
+        25,
+        39,
+        186,
+        66,
+        214
+      ],
+      "accounts": [
+        {
+          "name": "capsule",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  112,
+                  115,
+                  117,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "capsule.creator",
+                "account": "Capsule"
+              },
+              {
+                "kind": "account",
+                "path": "capsule.open_timestamp",
+                "account": "Capsule"
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow",
+          "writable": true,
+          "optional": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "capsule"
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow_stake_account",
+          "writable": true,
+          "optional": true
+        },
+        {
+          "name": "creator_stake_account",
+          "writable": true,
+          "optional": true
+        },
+        {
+          "name": "creator",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "cast_vote",
+      "docs": [
+        "Cast a vote on an open capsule"
+      ],
+      "discriminator": [
+        20,
+        212,
+        15,
+        189,
+        69,
+        180,
+        69,
+        151
+      ],
+      "accounts": [
+        {
+          "name": "capsule",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  112,
+                  115,
+                  117,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "capsule.creator",
+                "account": "Capsule"
+              },
+              {
+                "kind": "account",
+                "path": "capsule.open_timestamp",
+                "account": "Capsule"
+              }
+            ]
+          }
+        },
+        {
+          "name": "voter_record",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  111,
+                  116,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "capsule"
+              },
+              {
+                "kind": "account",
+                "path": "voter"
+              }
+            ]
+          }
+        },
+        {
+          "name": "voter",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "vote",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "claim",
+      "docs": [
+        "Claim stake from escrow after resolution"
+      ],
+      "discriminator": [
+        62,
+        198,
+        214,
+        193,
+        213,
+        159,
+        108,
+        210
+      ],
+      "accounts": [
+        {
+          "name": "capsule",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  112,
+                  115,
+                  117,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "capsule.creator",
+                "account": "Capsule"
+              },
+              {
+                "kind": "account",
+                "path": "capsule.open_timestamp",
+                "account": "Capsule"
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "capsule"
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow_stake_account",
+          "writable": true
+        },
+        {
+          "name": "recipient_stake_account",
+          "writable": true
+        },
+        {
+          "name": "recipient",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "close_capsule",
+      "docs": [
+        "Close a capsule account and reclaim rent (creator only, after resolution/cancellation)"
+      ],
+      "discriminator": [
+        16,
+        246,
+        167,
+        171,
+        45,
+        72,
+        171,
+        122
+      ],
+      "accounts": [
+        {
+          "name": "capsule",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  112,
+                  115,
+                  117,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "capsule.creator",
+                "account": "Capsule"
+              },
+              {
+                "kind": "account",
+                "path": "capsule.open_timestamp",
+                "account": "Capsule"
+              }
+            ]
+          }
+        },
+        {
+          "name": "creator",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize_capsule",
+      "docs": [
+        "Create a new time capsule with optional stake"
+      ],
+      "discriminator": [
+        34,
+        7,
+        219,
+        18,
+        171,
+        130,
+        53,
+        5
+      ],
+      "accounts": [
+        {
+          "name": "capsule",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  112,
+                  115,
+                  117,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "creator"
+              },
+              {
+                "kind": "arg",
+                "path": "open_timestamp"
+              }
+            ]
+          }
+        },
+        {
+          "name": "nft_mint",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  110,
+                  102,
+                  116,
+                  95,
+                  109,
+                  105,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "capsule"
+              }
+            ]
+          }
+        },
+        {
+          "name": "creator_nft_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "creator"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "nft_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "metadata_account",
+          "writable": true
+        },
+        {
+          "name": "creator",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "metadata_program",
+          "address": "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "metadata_uri",
+          "type": "string"
+        },
+        {
+          "name": "open_timestamp",
+          "type": "i64"
+        },
+        {
+          "name": "voting_duration",
+          "type": "i64"
+        },
+        {
+          "name": "quorum",
+          "type": "u64"
+        },
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "symbol",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "open_for_voting",
+      "docs": [
+        "Open capsule for voting after timestamp passes"
+      ],
+      "discriminator": [
+        6,
+        79,
+        198,
+        136,
+        123,
+        80,
+        85,
+        74
+      ],
+      "accounts": [
+        {
+          "name": "capsule",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  112,
+                  115,
+                  117,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "capsule.creator",
+                "account": "Capsule"
+              },
+              {
+                "kind": "account",
+                "path": "capsule.open_timestamp",
+                "account": "Capsule"
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "resolve_capsule",
+      "docs": [
+        "Resolve capsule after voting period ends"
+      ],
+      "discriminator": [
+        154,
+        205,
+        71,
+        207,
+        43,
+        162,
+        121,
+        254
+      ],
+      "accounts": [
+        {
+          "name": "capsule",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  112,
+                  115,
+                  117,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "capsule.creator",
+                "account": "Capsule"
+              },
+              {
+                "kind": "account",
+                "path": "capsule.open_timestamp",
+                "account": "Capsule"
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Capsule",
+      "discriminator": [
+        212,
+        231,
+        77,
+        219,
+        58,
+        13,
+        118,
+        241
+      ]
+    },
+    {
+      "name": "Escrow",
+      "discriminator": [
+        31,
+        213,
+        123,
+        187,
+        186,
+        22,
+        218,
+        155
+      ]
+    },
+    {
+      "name": "VoterRecord",
+      "discriminator": [
+        178,
+        96,
+        138,
+        116,
+        143,
+        202,
+        115,
+        33
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "CapsuleCancelled",
+      "discriminator": [
+        11,
+        147,
+        140,
+        123,
+        217,
+        137,
+        169,
+        189
+      ]
+    },
+    {
+      "name": "CapsuleClosed",
+      "discriminator": [
+        83,
+        146,
+        25,
+        18,
+        69,
+        238,
+        40,
+        24
+      ]
+    },
+    {
+      "name": "CapsuleCreated",
+      "discriminator": [
+        113,
+        132,
+        247,
+        198,
+        217,
+        47,
+        201,
+        223
+      ]
+    },
+    {
+      "name": "CapsuleOpened",
+      "discriminator": [
+        14,
+        230,
+        127,
+        35,
+        13,
+        119,
+        62,
+        218
+      ]
+    },
+    {
+      "name": "CapsuleResolved",
+      "discriminator": [
+        179,
+        218,
+        111,
+        191,
+        113,
+        59,
+        206,
+        170
+      ]
+    },
+    {
+      "name": "StakeClaimed",
+      "discriminator": [
+        231,
+        124,
+        83,
+        169,
+        100,
+        57,
+        96,
+        131
+      ]
+    },
+    {
+      "name": "VoteCast",
+      "discriminator": [
+        39,
+        53,
+        195,
+        104,
+        188,
+        17,
+        225,
+        213
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidTimestamp",
+      "msg": "Open timestamp must be in the future"
+    },
+    {
+      "code": 6001,
+      "name": "CapsuleNotReady",
+      "msg": "Capsule is not yet ready to be opened"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidStatus",
+      "msg": "Capsule is not in the correct status for this operation"
+    },
+    {
+      "code": 6003,
+      "name": "AlreadyVoted",
+      "msg": "You have already voted on this capsule"
+    },
+    {
+      "code": 6004,
+      "name": "VotingPeriodNotEnded",
+      "msg": "Voting period has not ended yet"
+    },
+    {
+      "code": 6005,
+      "name": "QuorumNotReached",
+      "msg": "Quorum has not been reached"
+    },
+    {
+      "code": 6006,
+      "name": "Unauthorized",
+      "msg": "Only the creator can perform this action"
+    },
+    {
+      "code": 6007,
+      "name": "MetadataUriTooLong",
+      "msg": "Metadata URI is too long"
+    },
+    {
+      "code": 6008,
+      "name": "InvalidDestinationAddress",
+      "msg": "Invalid stake destination address"
+    },
+    {
+      "code": 6009,
+      "name": "NotResolved",
+      "msg": "Capsule has not been resolved yet"
+    },
+    {
+      "code": 6010,
+      "name": "NoStakeToClaim",
+      "msg": "No stake to claim"
+    },
+    {
+      "code": 6011,
+      "name": "ArithmeticOverflow",
+      "msg": "Arithmetic overflow"
+    },
+    {
+      "code": 6012,
+      "name": "InvalidStakeAmount",
+      "msg": "Invalid stake amount"
+    },
+    {
+      "code": 6013,
+      "name": "VotingPeriodEnded",
+      "msg": "Voting period has ended"
+    },
+    {
+      "code": 6014,
+      "name": "StakeNotClaimed",
+      "msg": "Stake must be claimed before closing the capsule"
+    }
+  ],
+  "types": [
+    {
+      "name": "Capsule",
+      "docs": [
+        "Capsule state - stores all information about a time capsule"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "creator",
+            "docs": [
+              "Creator of the capsule (original owner)"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "owner",
+            "docs": [
+              "Current owner of the NFT"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "nft_mint",
+            "docs": [
+              "NFT mint address"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "metadata_uri",
+            "docs": [
+              "URI pointing to metadata (IPFS)"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "open_timestamp",
+            "docs": [
+              "Timestamp when capsule can be opened for voting"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "voting_end_timestamp",
+            "docs": [
+              "Timestamp when voting period ends"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "voting_duration",
+            "docs": [
+              "Duration of voting period in seconds"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "status",
+            "docs": [
+              "Current status of the capsule"
+            ],
+            "type": {
+              "defined": {
+                "name": "CapsuleStatus"
+              }
+            }
+          },
+          {
+            "name": "yes_votes",
+            "docs": [
+              "Number of yes votes"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "no_votes",
+            "docs": [
+              "Number of no votes"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "quorum",
+            "docs": [
+              "Minimum votes required for resolution"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "stake_amount",
+            "docs": [
+              "Optional stake amount"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "stake_mint",
+            "docs": [
+              "Mint of the staked token (System Program for SOL)"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "stake_destination",
+            "docs": [
+              "Where stake goes on failure"
+            ],
+            "type": {
+              "defined": {
+                "name": "StakeDestination"
+              }
+            }
+          },
+          {
+            "name": "destination_address",
+            "docs": [
+              "Destination address for charity/community pool"
+            ],
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "result",
+            "docs": [
+              "Result after resolution"
+            ],
+            "type": {
+              "option": {
+                "defined": {
+                  "name": "CapsuleResult"
+                }
+              }
+            }
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed for PDA"
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CapsuleCancelled",
+      "docs": [
+        "Emitted when a capsule is cancelled"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "capsule",
+            "type": "pubkey"
+          },
+          {
+            "name": "creator",
+            "type": "pubkey"
+          },
+          {
+            "name": "cancelled_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CapsuleClosed",
+      "docs": [
+        "Emitted when a capsule account is closed"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "capsule",
+            "type": "pubkey"
+          },
+          {
+            "name": "creator",
+            "type": "pubkey"
+          },
+          {
+            "name": "closed_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CapsuleCreated",
+      "docs": [
+        "Emitted when a new capsule is created"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "capsule",
+            "type": "pubkey"
+          },
+          {
+            "name": "creator",
+            "type": "pubkey"
+          },
+          {
+            "name": "nft_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "open_timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "stake_amount",
+            "type": "u64"
+          },
+          {
+            "name": "metadata_uri",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CapsuleOpened",
+      "docs": [
+        "Emitted when a capsule is opened for voting"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "capsule",
+            "type": "pubkey"
+          },
+          {
+            "name": "opened_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CapsuleResolved",
+      "docs": [
+        "Emitted when a capsule is resolved"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "capsule",
+            "type": "pubkey"
+          },
+          {
+            "name": "result",
+            "type": "bool"
+          },
+          {
+            "name": "yes_votes",
+            "type": "u64"
+          },
+          {
+            "name": "no_votes",
+            "type": "u64"
+          },
+          {
+            "name": "resolved_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CapsuleResult",
+      "docs": [
+        "Result of capsule resolution"
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Success"
+          },
+          {
+            "name": "Failure"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CapsuleStatus",
+      "docs": [
+        "Capsule lifecycle status"
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Active"
+          },
+          {
+            "name": "OpenForVoting"
+          },
+          {
+            "name": "Resolved"
+          },
+          {
+            "name": "Cancelled"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Escrow",
+      "docs": [
+        "Escrow account holding staked tokens"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "capsule",
+            "docs": [
+              "Associated capsule"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "docs": [
+              "Amount held in escrow"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "mint",
+            "docs": [
+              "Token mint"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed"
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "StakeClaimed",
+      "docs": [
+        "Emitted when stake is claimed"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "capsule",
+            "type": "pubkey"
+          },
+          {
+            "name": "recipient",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "StakeDestination",
+      "docs": [
+        "Where stake goes on failure"
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "CommunityPool"
+          },
+          {
+            "name": "Charity"
+          },
+          {
+            "name": "TopVoters"
+          },
+          {
+            "name": "ReturnToCreator"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VoteCast",
+      "docs": [
+        "Emitted when a vote is cast"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "capsule",
+            "type": "pubkey"
+          },
+          {
+            "name": "voter",
+            "type": "pubkey"
+          },
+          {
+            "name": "vote",
+            "type": "bool"
+          },
+          {
+            "name": "yes_votes",
+            "type": "u64"
+          },
+          {
+            "name": "no_votes",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VoterRecord",
+      "docs": [
+        "Voter record to prevent double voting"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "capsule",
+            "docs": [
+              "Capsule being voted on"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "voter",
+            "docs": [
+              "Voter's wallet"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "vote",
+            "docs": [
+              "Vote cast (true = yes, false = no)"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "timestamp",
+            "docs": [
+              "Timestamp of vote"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed"
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ]
+}

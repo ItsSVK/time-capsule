@@ -6,7 +6,10 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-time_capsule = "CdnFqzmdDY1ArXRz1QbFbU1CtceN7xsz3mftJyosjM9u"
+time_capsule = "CqDKXwZffTzXQYsZvaYGTwKwGhdN6sHjMdQTVo5QHx54"
+
+[programs.devnet]
+time_capsule = "CqDKXwZffTzXQYsZvaYGTwKwGhdN6sHjMdQTVo5QHx54"
 
 [registry]
 url = "https://api.apr.dev"

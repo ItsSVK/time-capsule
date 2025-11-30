@@ -43,4 +43,7 @@ pub enum TimeCapsuleError {
 
     #[msg("Voting period has ended")]
     VotingPeriodEnded,
+
+    #[msg("Stake must be claimed before closing the capsule")]
+    StakeNotClaimed,
 }
