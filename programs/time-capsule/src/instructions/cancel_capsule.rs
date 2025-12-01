@@ -66,6 +66,9 @@ pub fn handler(ctx: Context<CancelCapsule>) -> Result<()> {
             
             token::transfer(transfer_ctx, amount)?;
         }
+        
+        // Reset stake amount to 0 after returning stake
+        capsule.stake_amount = 0;
     }
     
     // Emit event

@@ -1,12 +1,12 @@
 use anchor_lang::prelude::*;
-use anchor_spl::token::{self, Token, TokenAccount, Transfer};
+use anchor_spl::token::{self, Token, Transfer};
 
 use crate::state::*;
 use crate::error::TimeCapsuleError;
 use crate::events::StakeClaimed;
 
 pub fn handler(ctx: Context<Claim>) -> Result<()> {
-    let capsule = &ctx.accounts.capsule;
+    let capsule = &mut ctx.accounts.capsule;
     let escrow = &ctx.accounts.escrow;
     
     // Validate capsule is resolved
@@ -90,6 +90,9 @@ pub fn handler(ctx: Context<Claim>) -> Result<()> {
         token::transfer(transfer_ctx, amount)?;
     }
     
+    // Reset stake amount to 0 after claiming
+    capsule.stake_amount = 0;
+    
     // Emit event
     emit!(StakeClaimed {
         capsule: capsule.key(),
@@ -103,6 +106,7 @@ pub fn handler(ctx: Context<Claim>) -> Result<()> {
 #[derive(Accounts)]
 pub struct Claim<'info> {
     #[account(
+        mut,
         seeds = [b"capsule", capsule.creator.as_ref(), capsule.open_timestamp.to_le_bytes().as_ref()],
         bump = capsule.bump
     )]
