@@ -22,6 +22,7 @@ export type CapsuleCategory = (typeof CAPSULE_CATEGORIES)[number];
 
 // Default voting duration options (in seconds)
 export const VOTING_DURATION_OPTIONS = [
+  { label: '1 Minute', value: 60 },
   { label: '1 Hour', value: 3600 },
   { label: '6 Hours', value: 21600 },
   { label: '12 Hours', value: 43200 },

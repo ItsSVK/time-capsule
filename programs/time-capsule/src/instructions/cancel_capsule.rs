@@ -26,13 +26,31 @@ pub fn handler(ctx: Context<CancelCapsule>) -> Result<()> {
     
     // Return stake if any
     if capsule.stake_amount > 0 {
+        // Validate escrow exists when stake_amount > 0
+        require!(
+            ctx.accounts.escrow.is_some(),
+            TimeCapsuleError::InvalidStakeAmount
+        );
+        
+        // Escrow must exist when stake_amount > 0
         let escrow = ctx.accounts.escrow.as_ref().unwrap();
+        
+        // Validate escrow belongs to this capsule
+        require!(
+            escrow.capsule == capsule.key(),
+            TimeCapsuleError::InvalidStakeAmount
+        );
+        
         let amount = escrow.amount;
+        
+        // Get bump from escrow account (stored during creation)
+        let bump = escrow.bump;
+        
+        let escrow_info = escrow.to_account_info();
         
         if capsule.stake_mint == System::id() {
             // Transfer SOL back
-            **escrow.to_account_info().try_borrow_mut_lamports()? = escrow
-                .to_account_info()
+            **escrow_info.try_borrow_mut_lamports()? = escrow_info
                 .lamports()
                 .checked_sub(amount)
                 .ok_or(TimeCapsuleError::ArithmeticOverflow)?;
@@ -50,7 +68,7 @@ pub fn handler(ctx: Context<CancelCapsule>) -> Result<()> {
             let seeds = &[
                 b"escrow",
                 capsule_key.as_ref(),
-                &[escrow.bump],
+                &[bump],
             ];
             let signer = &[&seeds[..]];
             
@@ -59,7 +77,7 @@ pub fn handler(ctx: Context<CancelCapsule>) -> Result<()> {
                 Transfer {
                     from: ctx.accounts.escrow_stake_account.as_ref().unwrap().to_account_info(),
                     to: ctx.accounts.creator_stake_account.as_ref().unwrap().to_account_info(),
-                    authority: escrow.to_account_info(),
+                    authority: escrow_info,
                 },
                 signer,
             );
@@ -90,12 +108,9 @@ pub struct CancelCapsule<'info> {
     )]
     pub capsule: Account<'info, Capsule>,
     
-    #[account(
-        mut,
-        seeds = [b"escrow", capsule.key().as_ref()],
-        bump = escrow.bump,
-        close = creator
-    )]
+    /// CHECK: Escrow account (only required if stake_amount > 0)
+    /// No PDA constraints - validated manually in handler
+    #[account(mut)]
     pub escrow: Option<Account<'info, Escrow>>,
     
     #[account(mut)]

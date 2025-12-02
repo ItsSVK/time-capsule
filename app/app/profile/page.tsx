@@ -29,7 +29,8 @@ export default function ProfilePage() {
   const [copied, setCopied] = useState(false);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
 
-  // console.log(' here is the userCapsules');
+  console.log(' here is the userCapsules');
+  console.log(userCapsules, { depth: null });
   // console.log(JSON.stringify(userCapsules, null, 2));
 
   const copyAddress = () => {

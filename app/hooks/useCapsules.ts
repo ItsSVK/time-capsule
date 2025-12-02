@@ -417,10 +417,22 @@ export function useCapsuleActions() {
         throw new Error('Wallet not connected');
       }
 
-      const [escrowPda] = PublicKey.findProgramAddressSync(
-        [Buffer.from('escrow'), capsulePda.toBuffer()],
-        PROGRAM_ID
-      );
+      // Fetch capsule to check if it has stake
+      const capsuleAccount = await (
+        program.account as Record<
+          string,
+          { fetch: (pda: PublicKey) => Promise<CapsuleAccount> }
+        >
+      ).capsule.fetch(capsulePda);
+      const hasStake = capsuleAccount.stakeAmount.toNumber() > 0;
+
+      // Only derive escrow PDA if there's stake
+      const escrowPda = hasStake
+        ? PublicKey.findProgramAddressSync(
+            [Buffer.from('escrow'), capsulePda.toBuffer()],
+            PROGRAM_ID
+          )[0]
+        : null;
 
       const tx = await (
         program.methods as Record<
@@ -435,7 +447,9 @@ export function useCapsuleActions() {
         .cancelCapsule()
         .accountsPartial({
           capsule: capsulePda,
-          escrow: escrowPda,
+          escrow: escrowPda, // null if no stake
+          escrowStakeAccount: null,
+          creatorStakeAccount: null,
           creator: wallet.publicKey,
           tokenProgram: TOKEN_PROGRAM_ID,
           systemProgram: SystemProgram.programId,
