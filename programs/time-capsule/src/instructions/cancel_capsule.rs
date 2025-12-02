@@ -49,7 +49,8 @@ pub fn handler(ctx: Context<CancelCapsule>) -> Result<()> {
         let escrow_info = escrow.to_account_info();
         
         if capsule.stake_mint == System::id() {
-            // Transfer SOL back
+            // Transfer stake amount back to creator
+            // The remaining rent will be returned via the 'close' constraint
             **escrow_info.try_borrow_mut_lamports()? = escrow_info
                 .lamports()
                 .checked_sub(amount)
@@ -62,6 +63,9 @@ pub fn handler(ctx: Context<CancelCapsule>) -> Result<()> {
                 .lamports()
                 .checked_add(amount)
                 .ok_or(TimeCapsuleError::ArithmeticOverflow)?;
+            
+            // Note: The escrow account will be closed by Anchor's 'close' constraint,
+            // which will transfer the remaining rent lamports to the creator
         } else {
             // Transfer SPL tokens back
             let capsule_key = capsule.key();
@@ -110,7 +114,11 @@ pub struct CancelCapsule<'info> {
     
     /// CHECK: Escrow account (only required if stake_amount > 0)
     /// No PDA constraints - validated manually in handler
-    #[account(mut)]
+    /// Will be closed after stake is returned
+    #[account(
+        mut,
+        close = creator
+    )]
     pub escrow: Option<Account<'info, Escrow>>,
     
     #[account(mut)]

@@ -7,7 +7,7 @@ pub mod state;
 
 use instructions::*;
 
-declare_id!("BneXxLPvUiwVsuDxWcPvHUd6rwwN9m2huxKLfqVTYG1F");
+declare_id!("7RVNQ4L34XRZ2DtKgbeahAQNRGzyoWJjJpHwVkfzPgkK");
 
 #[program]
 pub mod time_capsule {
