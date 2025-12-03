@@ -10,6 +10,7 @@ interface FormNavigationProps {
   onPrevious: () => void;
   onNext: () => void;
   onSubmit: () => void;
+  submitting: boolean;
 }
 
 export default function FormNavigation({
@@ -18,6 +19,7 @@ export default function FormNavigation({
   onPrevious,
   onNext,
   onSubmit,
+  submitting,
 }: FormNavigationProps) {
   return (
     <div className="flex justify-between border-t border-border/50 pt-6 relative z-10 w-full">
@@ -50,10 +52,15 @@ export default function FormNavigation({
           <Button
             type="button"
             onClick={onSubmit}
-            className="shadow-xl bg-linear-to-r from-primary via-primary to-primary/90 hover:shadow-2xl h-11 px-8 font-semibold cursor-pointer"
+            disabled={submitting}
+            className="shadow-xl bg-linear-to-r from-primary via-primary to-primary/90 hover:shadow-2xl h-11 px-8 font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <Sparkles className="h-4 w-4 mr-2" />
-            Create Capsule
+            {submitting ? (
+              <Sparkles className="h-4 w-4 mr-2 animate-pulse" />
+            ) : (
+              <Sparkles className="h-4 w-4 mr-2" />
+            )}
+            {submitting ? 'Processing...' : 'Create Capsule'}
           </Button>
         </motion.div>
       )}
