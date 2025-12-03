@@ -4,6 +4,7 @@ import './globals.css';
 import { Header } from '@/components/Header';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { SolanaProviders } from '@/lib/solana/provider';
+import { Toaster } from 'sonner';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -42,6 +43,7 @@ export default function RootLayout({
             {children}
           </SolanaProviders>
         </ThemeProvider>
+        <Toaster position="bottom-right" richColors />
       </body>
     </html>
   );

@@ -15,6 +15,7 @@ import ScheduleStep from './components/ScheduleStep';
 import ReviewStep from './components/ReviewStep';
 import FormNavigation from './components/FormNavigation';
 import { StakeDestination } from '@/lib/solana/types';
+import { toast } from 'sonner';
 
 export default function CreatePage() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -75,7 +76,7 @@ export default function CreatePage() {
 
   const onSubmit = async (data: FormData) => {
     console.log('Form submitted:', data);
-    alert('Time Capsule created successfully!');
+    toast.success('Time Capsule created successfully!');
   };
 
   return (
