@@ -374,15 +374,51 @@ export function useCapsuleActions() {
   );
 
   const claimStake = useCallback(
-    async (capsulePda: PublicKey) => {
+    async (capsulePda: PublicKey, recipientAddress?: PublicKey) => {
       if (!program || !wallet.publicKey) {
         throw new Error('Wallet not connected');
       }
+
+      // Fetch capsule to get stake details
+      const capsuleAccount = await (
+        program.account as Record<
+          string,
+          { fetch: (pda: PublicKey) => Promise<CapsuleAccount> }
+        >
+      ).capsule.fetch(capsulePda);
 
       const [escrowPda] = PublicKey.findProgramAddressSync(
         [Buffer.from('escrow'), capsulePda.toBuffer()],
         PROGRAM_ID
       );
+
+      // Determine recipient based on result and stake destination
+      const recipient = recipientAddress || wallet.publicKey;
+
+      // For SOL stakes (stake_mint = SystemProgram.programId), use wallet addresses
+      const isNativeStake = capsuleAccount.stakeMint.equals(
+        SystemProgram.programId
+      );
+
+      let escrowStakeAccount: PublicKey;
+      let recipientStakeAccount: PublicKey;
+
+      if (isNativeStake) {
+        // For native SOL, escrow PDA holds SOL directly
+        escrowStakeAccount = escrowPda;
+        recipientStakeAccount = recipient;
+      } else {
+        // For SPL tokens, derive associated token accounts
+        escrowStakeAccount = await getAssociatedTokenAddress(
+          capsuleAccount.stakeMint,
+          escrowPda,
+          true // allowOwnerOffCurve for PDA
+        );
+        recipientStakeAccount = await getAssociatedTokenAddress(
+          capsuleAccount.stakeMint,
+          recipient
+        );
+      }
 
       const tx = await (
         program.methods as Record<
@@ -398,9 +434,9 @@ export function useCapsuleActions() {
         .accountsPartial({
           capsule: capsulePda,
           escrow: escrowPda,
-          recipient: wallet.publicKey,
-          recipientStakeAccount: TOKEN_PROGRAM_ID,
-          escrowStakeAccount: TOKEN_PROGRAM_ID,
+          escrowStakeAccount: escrowStakeAccount,
+          recipientStakeAccount: recipientStakeAccount,
+          recipient: recipient,
           tokenProgram: TOKEN_PROGRAM_ID,
           systemProgram: SystemProgram.programId,
         })

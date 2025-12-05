@@ -109,6 +109,7 @@ export function useCapsuleSubmission() {
         err instanceof Error ? err.message : 'Failed to create capsule'
       );
       setProgress(0);
+      setShowProgressBar(false);
       setSubmitting(false);
     }
   };
