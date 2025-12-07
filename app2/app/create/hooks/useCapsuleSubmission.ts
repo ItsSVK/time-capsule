@@ -36,6 +36,7 @@ export function useCapsuleSubmission() {
         toast.error('Open date must be in the future');
         setProgress(0);
         setSubmitting(false);
+        setShowProgressBar(false);
         return;
       }
 

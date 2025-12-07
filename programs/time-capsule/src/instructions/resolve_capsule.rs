@@ -25,14 +25,18 @@ pub fn handler(ctx: Context<ResolveCapsule>) -> Result<()> {
         .checked_add(capsule.no_votes)
         .ok_or(TimeCapsuleError::ArithmeticOverflow)?;
     
-    require!(
-        total_votes >= capsule.quorum,
-        TimeCapsuleError::QuorumNotReached
-    );
+    // require!(
+    //     total_votes >= capsule.quorum,
+    //     TimeCapsuleError::QuorumNotReached
+    // );
     
-    // Determine result (majority wins)
-    let result = if capsule.yes_votes > capsule.no_votes {
-        CapsuleResult::Success
+    // Determine result (majority wins) and QuorumNotReached as failure
+    let result = if total_votes >= capsule.quorum {
+        if capsule.yes_votes > capsule.no_votes {
+            CapsuleResult::Success
+        } else {
+            CapsuleResult::Failure
+        }
     } else {
         CapsuleResult::Failure
     };

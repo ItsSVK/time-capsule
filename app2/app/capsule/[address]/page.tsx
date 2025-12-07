@@ -1254,7 +1254,7 @@ export default function CapsuleDetailPage({
                             <Button
                               onClick={handleResolve}
                               size="lg"
-                              className="w-full h-14 text-lg gap-3 bg-linear-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 shadow-lg shadow-violet-500/25"
+                              className="w-full h-14 text-lg gap-3 bg-linear-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 shadow-lg shadow-violet-500/25 dark:text-white"
                             >
                               <CheckCircle className="h-5 w-5" />
                               Resolve Capsule
@@ -1297,7 +1297,7 @@ export default function CapsuleDetailPage({
                               <Button
                                 onClick={handleClaimStake}
                                 size="lg"
-                                className={`w-full h-14 text-lg gap-3 shadow-lg ${
+                                className={`w-full h-14 text-lg gap-3 shadow-lg dark:text-white ${
                                   capsule.result === CapsuleResult.Success
                                     ? 'bg-linear-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 shadow-green-500/25'
                                     : 'bg-linear-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 shadow-amber-500/25'

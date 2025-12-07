@@ -53,7 +53,8 @@ pub fn handler(ctx: Context<Claim>) -> Result<()> {
     
     // Transfer from escrow to recipient
     if capsule.stake_mint == System::id() {
-        // Transfer SOL
+        // Transfer SOL stake amount to recipient
+        // The remaining rent will be returned via the 'close' constraint
         **escrow.to_account_info().try_borrow_mut_lamports()? = escrow
             .to_account_info()
             .lamports()
@@ -67,6 +68,9 @@ pub fn handler(ctx: Context<Claim>) -> Result<()> {
             .lamports()
             .checked_add(amount)
             .ok_or(TimeCapsuleError::ArithmeticOverflow)?;
+        
+        // Note: The escrow account will be closed by Anchor's 'close' constraint,
+        // which will transfer the remaining rent lamports to the recipient
     } else {
         // Transfer SPL tokens
         let capsule_key = capsule.key();
@@ -108,7 +112,9 @@ pub struct Claim<'info> {
     #[account(
         mut,
         seeds = [b"capsule", capsule.creator.as_ref(), capsule.open_timestamp.to_le_bytes().as_ref()],
-        bump = capsule.bump
+        bump = capsule.bump,
+        constraint = capsule.status == CapsuleStatus::Resolved @ TimeCapsuleError::NotResolved,
+        constraint = capsule.stake_amount > 0 @ TimeCapsuleError::NoStakeToClaim
     )]
     pub capsule: Account<'info, Capsule>,
     
