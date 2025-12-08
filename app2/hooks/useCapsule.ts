@@ -1,5 +1,12 @@
-import { useCallback, useEffect, useState } from 'react';
-import { PublicKey } from '@solana/web3.js';
+import { useCallback, useEffect, useState, useMemo } from 'react';
+import {
+  PublicKey,
+  Keypair,
+  Transaction,
+  VersionedTransaction,
+} from '@solana/web3.js';
+import { useConnection } from '@solana/wallet-adapter-react';
+import { Program, AnchorProvider, Idl } from '@coral-xyz/anchor';
 import { useProgram } from './useProgram';
 import {
   CapsuleAccount,
@@ -10,80 +17,114 @@ import {
   getStakeDestination,
 } from '@/lib/solana/types';
 import { fetchMetadata } from '@/lib/pinata';
+import idl from '@/lib/solana/idl.json';
 
 export function useCapsule(address: string | null) {
-  const { program, wallet } = useProgram();
+  const { program: walletProgram } = useProgram();
+  const { connection } = useConnection();
   const [capsule, setCapsule] = useState<ParsedCapsule | null>(null);
   const [loading, setLoading] = useState(true);
+  const [refetching, setRefetching] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchCapsule = useCallback(async () => {
-    if (!address) {
-      setLoading(false);
-      setError('Invalid capsule address');
-      return;
-    }
+  // Create a read-only program for fetching data when wallet is not connected
+  const readOnlyProgram = useMemo(() => {
+    if (walletProgram) return walletProgram; // Use wallet program if available
 
-    if (!wallet.publicKey) {
-      setLoading(false);
-      setError('Please connect your wallet to view this capsule');
-      return;
-    }
+    // Create a read-only provider with a dummy keypair
+    const dummyKeypair = Keypair.generate();
+    const readOnlyProvider = new AnchorProvider(
+      connection,
+      {
+        publicKey: dummyKeypair.publicKey,
+        signTransaction: async (tx: Transaction | VersionedTransaction) => tx,
+        signAllTransactions: async (
+          txs: (Transaction | VersionedTransaction)[]
+        ) => txs,
+      } as never,
+      AnchorProvider.defaultOptions()
+    );
 
-    if (!program) {
-      // Program still initializing, keep loading
-      return;
-    }
+    return new Program(idl as Idl, readOnlyProvider);
+  }, [walletProgram, connection]);
 
-    try {
-      setLoading(true);
-      setError(null);
+  const fetchCapsule = useCallback(
+    async (isRefetch = false) => {
+      if (!address) {
+        setLoading(false);
+        setError('Invalid capsule address');
+        return;
+      }
 
-      const capsulePda = new PublicKey(address);
-      const account = await (
-        program.account as Record<
-          string,
-          { fetch: (pda: PublicKey) => Promise<CapsuleAccount> }
-        >
-      ).capsule.fetch(capsulePda);
+      if (!readOnlyProgram) {
+        // Program still initializing, keep loading
+        return;
+      }
 
-      // Fetch metadata from IPFS
-      const metadata = await fetchMetadata<CapsuleMetadata>(
-        account.metadataUri
-      );
+      try {
+        // Only set loading to true on initial fetch, not on refetch
+        if (isRefetch) {
+          setRefetching(true);
+        } else {
+          setLoading(true);
+        }
+        setError(null);
 
-      const status = getCapsuleStatus(account);
-      const result = getCapsuleResult(account);
-      const stakeDestination = getStakeDestination(account);
-      const now = Math.floor(Date.now() / 1000);
-      const openTimestamp = account.openTimestamp.toNumber();
-      const votingEndTimestamp = account.votingEndTimestamp.toNumber();
-      const totalVotes =
-        account.yesVotes.toNumber() + account.noVotes.toNumber();
-      const yesPercentage =
-        totalVotes > 0
-          ? (account.yesVotes.toNumber() / totalVotes) * 100
-          : 50;
+        const capsulePda = new PublicKey(address);
+        const account = await (
+          readOnlyProgram.account as Record<
+            string,
+            { fetch: (pda: PublicKey) => Promise<CapsuleAccount> }
+          >
+        ).capsule.fetch(capsulePda);
 
-      setCapsule({
-        publicKey: capsulePda,
-        account,
-        metadata: metadata || undefined,
-        status,
-        result,
-        stakeDestination,
-        timeRemaining: Math.max(0, openTimestamp - now),
-        votingTimeRemaining: Math.max(0, votingEndTimestamp - now),
-        totalVotes,
-        yesPercentage,
-      } as ParsedCapsule);
-    } catch (err) {
-      console.error('Error fetching capsule:', err);
-      setError('Failed to fetch capsule');
-    } finally {
-      setLoading(false);
-    }
-  }, [program, address, wallet.publicKey]);
+        // Fetch metadata from IPFS
+        const metadata = await fetchMetadata<CapsuleMetadata>(
+          account.metadataUri
+        );
+
+        const status = getCapsuleStatus(account);
+        const result = getCapsuleResult(account);
+        const stakeDestination = getStakeDestination(account);
+        const now = Math.floor(Date.now() / 1000);
+        const openTimestamp = account.openTimestamp.toNumber();
+        const votingEndTimestamp = account.votingEndTimestamp.toNumber();
+        const totalVotes =
+          account.yesVotes.toNumber() + account.noVotes.toNumber();
+        const yesPercentage =
+          totalVotes > 0
+            ? (account.yesVotes.toNumber() / totalVotes) * 100
+            : 50;
+
+        setCapsule({
+          publicKey: capsulePda,
+          account,
+          metadata: metadata || undefined,
+          status,
+          result,
+          stakeDestination,
+          timeRemaining: Math.max(0, openTimestamp - now),
+          votingTimeRemaining: Math.max(0, votingEndTimestamp - now),
+          totalVotes,
+          yesPercentage,
+        } as ParsedCapsule);
+      } catch (err) {
+        console.error('Error fetching capsule:', err);
+        if (
+          err instanceof Error &&
+          err.message.includes('Account does not exist')
+        ) {
+          setError('Capsule not found');
+        } else {
+          setError('Failed to fetch capsule');
+        }
+      } finally {
+        setLoading(false);
+        setRefetching(false);
+      }
+    },
+    [readOnlyProgram, address]
+  );
 
   useEffect(() => {
     fetchCapsule();
@@ -92,8 +133,8 @@ export function useCapsule(address: string | null) {
   return {
     capsule,
     loading,
+    refetching,
     error,
-    refetch: fetchCapsule,
+    refetch: () => fetchCapsule(true),
   };
 }
-

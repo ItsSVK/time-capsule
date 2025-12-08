@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { LAMPORTS_PER_SOL } from '@solana/web3.js';
@@ -25,7 +25,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useCapsules } from '@/hooks/useCapsules';
 import { CapsuleStatus, CapsuleResult } from '@/lib/solana/types';
-import { Spinner } from '@/components/kibo-ui/spinner';
+import CapsuleCardSkeleton from './components/CapsuleCardSkeleton';
 
 // Animation variants
 const containerVariants = {
@@ -35,6 +35,7 @@ const containerVariants = {
     transition: {
       staggerChildren: 0.08,
       delayChildren: 0.1,
+      when: 'beforeChildren',
     },
   },
 };
@@ -110,7 +111,7 @@ const statusConfig = {
 
 export default function Home() {
   const { publicKey } = useWallet();
-  const { capsules, loading, error } = useCapsules();
+  const { capsules, loading, refetching, error } = useCapsules();
   const [realTimeRemaining, setRealTimeRemaining] = useState<
     Record<string, number>
   >({});
@@ -146,17 +147,8 @@ export default function Home() {
     return () => clearInterval(interval);
   }, [capsules]);
 
-  if (loading) {
-    return (
-      <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center p-4 relative">
-        <BackgroundGradients />
-        <div className="flex flex-col items-center gap-4 relative z-10">
-          <Spinner variant="throbber" className="size-10" />
-          <p className="text-muted-foreground">Loading capsules...</p>
-        </div>
-      </div>
-    );
-  }
+  // Show skeleton cards during initial loading
+  const showSkeletons = loading && capsules.length === 0;
 
   if (error) {
     return (
@@ -177,42 +169,14 @@ export default function Home() {
     );
   }
 
-  if (capsules.length === 0) {
-    return (
-      <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center p-4 relative">
-        <BackgroundGradients />
-        <div className="relative z-10 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <Card className="border-2 border-border/50 shadow-2xl backdrop-blur-xl bg-card/95 max-w-md w-full">
-              <CardContent className="pt-8 pb-8">
-                <Sparkles className="w-20 h-20 text-primary mx-auto mb-4" />
-                <h2 className="text-2xl font-bold mb-2">No Capsules Yet</h2>
-                <p className="text-muted-foreground mb-6">
-                  Be the first to create a time capsule!
-                </p>
-                <Link href="/create">
-                  <Button size="lg" className="w-full">
-                    <Sparkles className="h-5 w-5 mr-2" />
-                    Create Your First Capsule
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
-          </motion.div>
-        </div>
-      </div>
-    );
-  }
+  // Show "No Capsules Yet" only when NOT loading and no capsules
+  const showEmptyState = !loading && capsules.length === 0;
 
   return (
     <div className="min-h-[calc(100vh-4rem)] p-4 sm:p-6 lg:p-8 relative">
       <BackgroundGradients />
       <div className="max-w-7xl mx-auto relative z-10">
-        {/* Header */}
+        {/* Header - Always show */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -237,206 +201,266 @@ export default function Home() {
           </div>
         </motion.div>
 
-        {/* Capsules Grid */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-        >
-          {capsules.map(capsule => {
-            const address = capsule.publicKey.toBase58();
-            const status = statusConfig[capsule.status];
-            const StatusIcon = status.icon;
-            const timeRemaining =
-              realTimeRemaining[address] ?? capsule.timeRemaining;
-            const hasStake = capsule.account.stakeAmount.toNumber() > 0;
-            const stakeAmount =
-              capsule.account.stakeAmount.toNumber() / LAMPORTS_PER_SOL;
-            const isCreator =
-              publicKey && capsule.account.creator.equals(publicKey);
+        {/* Empty State - Only show when NOT loading and no capsules */}
+        {showEmptyState && (
+          <div className="flex items-center justify-center py-20">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="text-center"
+            >
+              <Card className="border-2 border-border/50 shadow-2xl backdrop-blur-xl bg-card/95 max-w-md w-full">
+                <CardContent className="pt-8 pb-8">
+                  <Sparkles className="w-20 h-20 text-primary mx-auto mb-4" />
+                  <h2 className="text-2xl font-bold mb-2">No Capsules Yet</h2>
+                  <p className="text-muted-foreground mb-6">
+                    Be the first to create a time capsule!
+                  </p>
+                  <Link href="/create">
+                    <Button size="lg" className="w-full">
+                      <Sparkles className="h-5 w-5 mr-2" />
+                      Create Your First Capsule
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
+        )}
 
-            return (
-              <motion.div key={address} variants={cardVariants}>
-                <Link href={`/capsule/${address}`}>
-                  <Card className="group border-2 border-border/50 shadow-xl backdrop-blur-xl bg-card/95 overflow-hidden h-full hover:border-primary/50 transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]">
-                    <div className="relative">
-                      {/* Status gradient overlay */}
-                      <div
-                        className={`absolute inset-0 bg-linear-to-br ${status.color} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
-                      />
+        {/* Capsules Grid - Show when loading (skeletons) or when we have capsules */}
+        {!showEmptyState && (
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={showSkeletons ? 'skeletons' : `capsules-${capsules.length}`}
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            >
+              {/* Show skeleton cards during initial load */}
+              {showSkeletons
+                ? Array.from({ length: 6 }).map((_, index) => (
+                    <motion.div
+                      key={`skeleton-${index}`}
+                      variants={cardVariants}
+                    >
+                      <CapsuleCardSkeleton />
+                    </motion.div>
+                  ))
+                : capsules.map(capsule => {
+                    const address = capsule.publicKey.toBase58();
+                    const status = statusConfig[capsule.status];
+                    const StatusIcon = status.icon;
+                    const timeRemaining =
+                      realTimeRemaining[address] ?? capsule.timeRemaining;
+                    const hasStake = capsule.account.stakeAmount.toNumber() > 0;
+                    const stakeAmount =
+                      capsule.account.stakeAmount.toNumber() / LAMPORTS_PER_SOL;
+                    const isCreator =
+                      publicKey && capsule.account.creator.equals(publicKey);
 
-                      {/* Image */}
-                      {capsule.metadata?.image ? (
-                        <div className="relative h-48 overflow-hidden">
-                          <img
-                            src={capsule.metadata.image}
-                            alt={capsule.metadata.name || 'Capsule'}
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                          />
-                          <div className="absolute inset-0 bg-linear-to-t from-card/80 via-transparent to-transparent" />
-                        </div>
-                      ) : (
-                        <div className="relative h-48 bg-linear-to-br from-primary/20 via-accent/10 to-primary/5 flex items-center justify-center">
-                          <ImageIcon className="h-16 w-16 text-muted-foreground/30" />
-                        </div>
-                      )}
+                    return (
+                      <motion.div key={address} variants={cardVariants}>
+                        <Link href={`/capsule/${address}`}>
+                          <Card className="group border-2 border-border/50 shadow-xl backdrop-blur-xl bg-card/95 overflow-hidden h-full hover:border-primary/50 transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]">
+                            <div className="relative">
+                              {/* Status gradient overlay */}
+                              <div
+                                className={`absolute inset-0 bg-linear-to-br ${status.color} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
+                              />
 
-                      {/* Status Badge - Top Right */}
-                      <div className="absolute top-4 right-4 z-10">
-                        <div
-                          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold backdrop-blur-sm border ${status.bg} ${status.text} ${status.border}`}
-                        >
-                          <StatusIcon className="h-3.5 w-3.5" />
-                          {status.label}
-                        </div>
-                      </div>
+                              {/* Image */}
+                              {capsule.metadata?.image ? (
+                                <div className="relative h-48 overflow-hidden">
+                                  <img
+                                    src={capsule.metadata.image}
+                                    alt={capsule.metadata.name || 'Capsule'}
+                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                  />
+                                  <div className="absolute inset-0 bg-linear-to-t from-card/80 via-transparent to-transparent" />
+                                </div>
+                              ) : (
+                                <div className="relative h-48 bg-linear-to-br from-primary/20 via-accent/10 to-primary/5 flex items-center justify-center">
+                                  <ImageIcon className="h-16 w-16 text-muted-foreground/30" />
+                                </div>
+                              )}
 
-                      {/* Creator Badge - Top Left */}
-                      {isCreator && (
-                        <div className="absolute top-4 left-4 z-10">
-                          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold backdrop-blur-sm bg-primary/20 text-primary border border-primary/30">
-                            <User className="h-3.5 w-3.5" />
-                            Yours
-                          </div>
-                        </div>
-                      )}
+                              {/* Status Badge - Top Right */}
+                              <div className="absolute top-4 right-4 z-10">
+                                <div
+                                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold backdrop-blur-sm border ${status.bg} ${status.text} ${status.border}`}
+                                >
+                                  <StatusIcon className="h-3.5 w-3.5" />
+                                  {status.label}
+                                </div>
+                              </div>
 
-                      <CardContent className="relative z-10 p-6 space-y-4">
-                        {/* Title */}
-                        <div className="min-h-[80px]">
-                          <h3 className="text-xl font-bold mb-2 line-clamp-2 group-hover:text-primary transition-colors">
-                            {capsule.metadata?.name || 'Untitled Capsule'}
-                          </h3>
-                          <p className="text-sm text-muted-foreground line-clamp-2">
-                            {truncateText(
-                              capsule.metadata?.description ||
-                                'No description provided',
-                              100
-                            )}
-                          </p>
-                        </div>
+                              {/* Creator Badge - Top Left */}
+                              {isCreator && (
+                                <div className="absolute top-4 left-4 z-10">
+                                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold backdrop-blur-sm bg-primary/20 text-primary border border-primary/30">
+                                    <User className="h-3.5 w-3.5" />
+                                    Yours
+                                  </div>
+                                </div>
+                              )}
 
-                        {/* Time Info */}
-                        <div className="space-y-2 pt-2 border-t border-border/50">
-                          {capsule.status === CapsuleStatus.Active && (
-                            <div className="flex items-center gap-2 text-sm">
-                              <Timer className="h-4 w-4 text-blue-500" />
-                              <span className="text-muted-foreground">
-                                Unlocks in:{' '}
-                              </span>
-                              <span className="font-semibold text-blue-500">
-                                {formatTimeRemaining(timeRemaining)}
-                              </span>
-                            </div>
-                          )}
+                              <CardContent className="relative z-10 p-6 space-y-4">
+                                {/* Title */}
+                                <div className="min-h-[80px]">
+                                  <h3 className="text-xl font-bold mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                                    {capsule.metadata?.name ||
+                                      'Untitled Capsule'}
+                                  </h3>
+                                  <p className="text-sm text-muted-foreground line-clamp-2">
+                                    {truncateText(
+                                      capsule.metadata?.description ||
+                                        'No description provided',
+                                      100
+                                    )}
+                                  </p>
+                                </div>
 
-                          {capsule.status === CapsuleStatus.OpenForVoting && (
-                            <div className="flex items-center gap-2 text-sm">
-                              <Vote className="h-4 w-4 text-purple-500" />
-                              <span className="text-muted-foreground">
-                                Voting ends in:{' '}
-                              </span>
-                              <span className="font-semibold text-purple-500">
-                                {formatTimeRemaining(timeRemaining)}
-                              </span>
-                            </div>
-                          )}
+                                {/* Time Info */}
+                                <div className="space-y-2 pt-2 border-t border-border/50">
+                                  {capsule.status === CapsuleStatus.Active && (
+                                    <div className="flex items-center gap-2 text-sm">
+                                      <Timer className="h-4 w-4 text-blue-500" />
+                                      <span className="text-muted-foreground">
+                                        Unlocks in:{' '}
+                                      </span>
+                                      <span className="font-semibold text-blue-500">
+                                        {formatTimeRemaining(timeRemaining)}
+                                      </span>
+                                    </div>
+                                  )}
 
-                          {capsule.status === CapsuleStatus.Resolved && (
-                            <div className="flex items-center gap-2 text-sm">
-                              <CheckCircle className="h-4 w-4 text-green-500" />
-                              <span className="font-semibold text-green-500">
-                                {capsule.result === CapsuleResult.Success
-                                  ? 'Goal Achieved! ✨'
-                                  : 'Voting Completed'}
-                              </span>
-                            </div>
-                          )}
-
-                          {/* Unlock Date */}
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                            <Calendar className="h-3.5 w-3.5" />
-                            {new Date(
-                              capsule.account.openTimestamp.toNumber() * 1000
-                            ).toLocaleDateString('en-US', {
-                              month: 'short',
-                              day: 'numeric',
-                              year: 'numeric',
-                            })}
-                          </div>
-                        </div>
-
-                        {/* Stats */}
-                        <div className="grid grid-cols-2 gap-3 pt-2 border-t border-border/50 min-h-[100px]">
-                          {/* Votes */}
-                          {
-                            <div className="flex items-center gap-2">
-                              <Vote className="h-4 w-4 text-purple-500" />
-                              <div>
-                                <p className="text-xs text-muted-foreground">
-                                  Votes
-                                </p>
-                                <p className="text-sm font-semibold">
                                   {capsule.status ===
-                                    CapsuleStatus.OpenForVoting ||
-                                  capsule.status === CapsuleStatus.Resolved
-                                    ? capsule.totalVotes
-                                    : 'N/A'}
-                                </p>
-                              </div>
-                            </div>
-                          }
+                                    CapsuleStatus.OpenForVoting && (
+                                    <div className="flex items-center gap-2 text-sm">
+                                      <Vote className="h-4 w-4 text-purple-500" />
+                                      <span className="text-muted-foreground">
+                                        Voting ends in:{' '}
+                                      </span>
+                                      <span className="font-semibold text-purple-500">
+                                        {formatTimeRemaining(timeRemaining)}
+                                      </span>
+                                    </div>
+                                  )}
 
-                          {/* Stake */}
-                          {hasStake && (
-                            <div className="flex items-center gap-2">
-                              <Coins className="h-4 w-4 text-amber-500" />
-                              <div>
-                                <p className="text-xs text-muted-foreground">
-                                  Stake
-                                </p>
-                                <p className="text-sm font-semibold text-amber-500">
-                                  {stakeAmount.toFixed(2)} SOL
-                                </p>
-                              </div>
-                            </div>
-                          )}
+                                  {capsule.status ===
+                                    CapsuleStatus.Resolved && (
+                                    <div className="flex items-center gap-2 text-sm">
+                                      <CheckCircle className="h-4 w-4 text-green-500" />
+                                      <span className="font-semibold text-green-500">
+                                        {capsule.result ===
+                                        CapsuleResult.Success
+                                          ? 'Goal Achieved! ✨'
+                                          : 'Voting Completed'}
+                                      </span>
+                                    </div>
+                                  )}
 
-                          {/* Creator */}
-                          <div className="flex items-center gap-2 col-span-2">
-                            <User className="h-4 w-4 text-cyan-500" />
-                            <div className="flex-1 min-w-0">
-                              <p className="text-xs text-muted-foreground">
-                                Creator
-                              </p>
-                              <p className="text-sm font-mono truncate">
-                                {truncateAddress(
-                                  capsule.account.creator.toBase58()
-                                )}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
+                                  {/* Unlock Date */}
+                                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                    <Calendar className="h-3.5 w-3.5" />
+                                    {new Date(
+                                      capsule.account.openTimestamp.toNumber() *
+                                        1000
+                                    ).toLocaleDateString('en-US', {
+                                      month: 'short',
+                                      day: 'numeric',
+                                      year: 'numeric',
+                                    })}
+                                  </div>
+                                </div>
 
-                        {/* View Button */}
-                        <div className="pt-2">
-                          <Button
-                            variant="outline"
-                            className="w-full group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-all"
-                          >
-                            View Details
-                            <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </div>
-                  </Card>
-                </Link>
-              </motion.div>
-            );
-          })}
-        </motion.div>
+                                {/* Stats */}
+                                <div className="grid grid-cols-2 gap-3 pt-2 border-t border-border/50 min-h-[100px]">
+                                  {/* Votes */}
+                                  {
+                                    <div className="flex items-center gap-2">
+                                      <Vote className="h-4 w-4 text-purple-500" />
+                                      <div>
+                                        <p className="text-xs text-muted-foreground">
+                                          Votes
+                                        </p>
+                                        <p className="text-sm font-semibold">
+                                          {capsule.status ===
+                                            CapsuleStatus.OpenForVoting ||
+                                          capsule.status ===
+                                            CapsuleStatus.Resolved
+                                            ? capsule.totalVotes
+                                            : 'N/A'}
+                                        </p>
+                                      </div>
+                                    </div>
+                                  }
+
+                                  {/* Stake */}
+                                  {hasStake && (
+                                    <div className="flex items-center gap-2">
+                                      <Coins className="h-4 w-4 text-amber-500" />
+                                      <div>
+                                        <p className="text-xs text-muted-foreground">
+                                          Stake
+                                        </p>
+                                        <p className="text-sm font-semibold text-amber-500">
+                                          {stakeAmount.toFixed(2)} SOL
+                                        </p>
+                                      </div>
+                                    </div>
+                                  )}
+
+                                  {/* Creator */}
+                                  <div className="flex items-center gap-2 col-span-2">
+                                    <User className="h-4 w-4 text-cyan-500" />
+                                    <div className="flex-1 min-w-0">
+                                      <p className="text-xs text-muted-foreground">
+                                        Creator
+                                      </p>
+                                      <p className="text-sm font-mono truncate">
+                                        {truncateAddress(
+                                          capsule.account.creator.toBase58()
+                                        )}
+                                      </p>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                {/* View Button */}
+                                <div className="pt-2">
+                                  <Button
+                                    variant="outline"
+                                    className="w-full group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-all"
+                                  >
+                                    View Details
+                                    <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                                  </Button>
+                                </div>
+                              </CardContent>
+                            </div>
+                          </Card>
+                        </Link>
+                      </motion.div>
+                    );
+                  })}
+            </motion.div>
+          </AnimatePresence>
+        )}
+
+        {/* Show refetching indicator */}
+        {refetching && !showSkeletons && !showEmptyState && (
+          <div className="fixed bottom-4 right-4 z-50">
+            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-card/95 backdrop-blur-xl border border-border/50 shadow-lg">
+              <div className="h-4 w-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+              <span className="text-sm text-muted-foreground">Updating...</span>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
