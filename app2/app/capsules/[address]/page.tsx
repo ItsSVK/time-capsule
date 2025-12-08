@@ -27,12 +27,14 @@ import VotingSettingsCard from './components/VotingSettingsCard';
 import StakeCard from './components/StakeCard';
 import AddressCard from './components/AddressCard';
 import ConfirmationModal from './components/ConfirmationModal';
+import { useRouter } from 'next/navigation';
 
 export default function CapsuleDetailPage({
   params,
 }: {
   params: Promise<{ address: string }>;
 }) {
+  const router = useRouter();
   const { address } = use(params);
   const { publicKey } = useWallet();
   const { capsule, loading, refetching, error, refetch } = useCapsule(address);
@@ -171,7 +173,7 @@ export default function CapsuleDetailPage({
     await closeCapsule(capsule.publicKey);
     toast.success('Capsule closed! Rent reclaimed.');
     // Redirect to home since capsule no longer exists
-    window.location.href = '/';
+    router.push('/capsules');
   };
 
   const copyAddress = (addr: string) => {

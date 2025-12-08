@@ -1,7 +1,7 @@
 'use client';
 
 import { Card, CardContent } from '@/components/ui/card';
-import { cardVariants } from '../capsule/[address]/constants';
+import { cardVariants } from '../[address]/constants';
 
 export default function CapsuleCardSkeleton() {
   return (
@@ -45,4 +45,3 @@ export default function CapsuleCardSkeleton() {
     </Card>
   );
 }
-

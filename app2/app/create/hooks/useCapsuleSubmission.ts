@@ -102,7 +102,7 @@ export function useCapsuleSubmission() {
       await new Promise(resolve => setTimeout(resolve, 1000));
       setProgress(100);
       // Redirect to capsule page
-      router.push(`/capsule/${capsulePda.toBase58()}`);
+      router.push(`/capsules/${capsulePda.toBase58()}`);
       setSubmitting(false);
     } catch (err) {
       console.error('Failed to create capsule:', err);
