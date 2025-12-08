@@ -37,6 +37,7 @@ export default function CreatePage() {
       quorum: 1,
       stakeAmount: 0,
       stakeDestination: StakeDestination.ReturnToCreator,
+      stakeDestinationAddress: '',
     },
   });
 
@@ -89,6 +90,7 @@ export default function CreatePage() {
                       direction={direction}
                       register={register}
                       errors={errors}
+                      watch={watch}
                     />
                   )}
 

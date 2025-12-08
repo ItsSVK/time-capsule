@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { UseFormRegister, FieldErrors } from 'react-hook-form';
+import { UseFormRegister, FieldErrors, UseFormWatch } from 'react-hook-form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select } from '@/components/ui/select';
@@ -16,14 +16,18 @@ interface ScheduleStepProps {
   direction: number;
   register: UseFormRegister<FormData>;
   errors: FieldErrors<FormData>;
+  watch: UseFormWatch<FormData>;
 }
 
 export default function ScheduleStep({
   direction,
   register,
   errors,
+  watch,
 }: ScheduleStepProps) {
   const [isStakeExpanded, setIsStakeExpanded] = useState(false);
+  const stakeDestination = watch('stakeDestination');
+
   return (
     <motion.div
       key="step-2"
@@ -212,88 +216,144 @@ export default function ScheduleStep({
               transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
               className="overflow-hidden"
             >
-              <div className="p-4 pt-0 grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="stakeAmount"
-                    className="text-sm font-semibold"
-                  >
-                    Stake Amount (SOL)
-                  </Label>
-                  <Input
-                    id="stakeAmount"
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    placeholder="e.g., 1.5"
-                    {...register('stakeAmount', {
-                      min: {
-                        value: 0,
-                        message:
-                          'Stake amount must be greater than or equal to 0',
-                      },
-                      valueAsNumber: true,
-                    })}
-                    className={`h-12 border-2 transition-all duration-200 ${
-                      errors.stakeAmount
-                        ? 'border-destructive focus:ring-destructive/20'
-                        : 'border-border/60 focus:border-primary/50 focus:ring-primary/20'
-                    }`}
-                  />
-                  <AnimatePresence>
-                    {errors.stakeAmount && (
-                      <motion.p
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        className="text-sm text-destructive"
-                      >
-                        {errors.stakeAmount.message}
-                      </motion.p>
-                    )}
-                  </AnimatePresence>
+              <div className="p-4 pt-0 space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor="stakeAmount"
+                      className="text-sm font-semibold"
+                    >
+                      Stake Amount (SOL)
+                    </Label>
+                    <Input
+                      id="stakeAmount"
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      placeholder="e.g., 1.5"
+                      {...register('stakeAmount', {
+                        min: {
+                          value: 0,
+                          message:
+                            'Stake amount must be greater than or equal to 0',
+                        },
+                        valueAsNumber: true,
+                      })}
+                      className={`h-12 border-2 transition-all duration-200 ${
+                        errors.stakeAmount
+                          ? 'border-destructive focus:ring-destructive/20'
+                          : 'border-border/60 focus:border-primary/50 focus:ring-primary/20'
+                      }`}
+                    />
+                    <AnimatePresence>
+                      {errors.stakeAmount && (
+                        <motion.p
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          className="text-sm text-destructive"
+                        >
+                          {errors.stakeAmount.message}
+                        </motion.p>
+                      )}
+                    </AnimatePresence>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor="stakeDestination"
+                      className="text-sm font-semibold"
+                    >
+                      If You Fail, Stake Goes To
+                    </Label>
+                    <Select
+                      id="stakeDestination"
+                      {...register('stakeDestination')}
+                      className={`h-12 border-2 transition-all duration-200 ${
+                        errors.stakeDestination
+                          ? 'border-destructive focus:ring-destructive/20'
+                          : 'border-border/60 focus:border-primary/50 focus:ring-primary/20'
+                      }`}
+                    >
+                      <option value={StakeDestination.ReturnToCreator}>
+                        Return to Me (No Risk)
+                      </option>
+                      <option value={StakeDestination.CommunityPool}>
+                        Community Pool
+                      </option>
+                      <option value={StakeDestination.Charity}>Charity</option>
+                    </Select>
+                    <AnimatePresence>
+                      {errors.stakeDestination && (
+                        <motion.p
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          className="text-sm text-destructive"
+                        >
+                          {errors.stakeDestination.message}
+                        </motion.p>
+                      )}
+                    </AnimatePresence>
+                  </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="stakeDestination"
-                    className="text-sm font-semibold"
-                  >
-                    If You Fail, Stake Goes To
-                  </Label>
-                  <Select
-                    id="stakeDestination"
-                    {...register('stakeDestination')}
-                    className={`h-12 border-2 transition-all duration-200 ${
-                      errors.stakeDestination
-                        ? 'border-destructive focus:ring-destructive/20'
-                        : 'border-border/60 focus:border-primary/50 focus:ring-primary/20'
-                    }`}
-                  >
-                    <option value={StakeDestination.ReturnToCreator}>
-                      Return to Me (No Risk)
-                    </option>
-                    <option value={StakeDestination.CommunityPool}>
-                      Community Pool
-                    </option>
-                    <option value={StakeDestination.Charity}>Charity</option>
-                    <option value={StakeDestination.TopVoters}>
-                      Top Voters
-                    </option>
-                  </Select>
-                  <AnimatePresence>
-                    {errors.stakeDestination && (
-                      <motion.p
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        className="text-sm text-destructive"
+                {/* Conditional Destination Address Input */}
+                <AnimatePresence>
+                  {stakeDestination &&
+                    stakeDestination !== StakeDestination.ReturnToCreator && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="overflow-hidden"
                       >
-                        {errors.stakeDestination.message}
-                      </motion.p>
+                        <div className="space-y-2 pt-2">
+                          <Label
+                            htmlFor="stakeDestinationAddress"
+                            className="text-sm font-semibold"
+                          >
+                            Destination Address{' '}
+                            <span className="text-destructive">*</span>
+                          </Label>
+                          <Input
+                            id="stakeDestinationAddress"
+                            placeholder="Enter Solana wallet address"
+                            {...register('stakeDestinationAddress', {
+                              required:
+                                stakeDestination ===
+                                  StakeDestination.CommunityPool ||
+                                stakeDestination === StakeDestination.Charity
+                                  ? 'Destination address is required'
+                                  : false,
+                              pattern: {
+                                value: /^[1-9A-HJ-NP-Za-km-z]{32,44}$/,
+                                message: 'Invalid Solana address',
+                              },
+                            })}
+                            className={`h-12 border-2 transition-all duration-200 ${
+                              errors.stakeDestinationAddress
+                                ? 'border-destructive focus:ring-destructive/20'
+                                : 'border-border/60 focus:border-primary/50 focus:ring-primary/20'
+                            }`}
+                          />
+                          <AnimatePresence>
+                            {errors.stakeDestinationAddress && (
+                              <motion.p
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                className="text-sm text-destructive"
+                              >
+                                {errors.stakeDestinationAddress.message}
+                              </motion.p>
+                            )}
+                          </AnimatePresence>
+                        </div>
+                      </motion.div>
                     )}
-                  </AnimatePresence>
-                </div>
+                </AnimatePresence>
               </div>
             </motion.div>
           )}

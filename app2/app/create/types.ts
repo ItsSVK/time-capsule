@@ -12,6 +12,7 @@ export type FormData = {
   quorum: number;
   stakeAmount: number;
   stakeDestination: StakeDestination;
+  stakeDestinationAddress?: string;
 };
 
 export type Step = {

@@ -49,9 +49,6 @@ export function useStakeClaimInfo(
             capsule.account.destinationAddress &&
             capsule.account.destinationAddress.equals(publicKey)
           );
-        case StakeDestination.TopVoters:
-          // For now, allow any voter to check (would need more complex logic for top voters)
-          return hasVoted;
         default:
           return false;
       }
@@ -97,12 +94,6 @@ export function useStakeClaimInfo(
               capsule.account.destinationAddress?.equals(publicKey),
             message: 'Stake goes to community pool',
             buttonText: 'Claim for Community',
-          };
-        case StakeDestination.TopVoters:
-          return {
-            canClaim: hasVoted, // Simplified - actual implementation would be more complex
-            message: 'Stake distributed to top voters',
-            buttonText: 'Claim Voter Reward',
           };
       }
     }

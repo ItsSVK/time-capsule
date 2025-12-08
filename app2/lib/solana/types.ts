@@ -1,23 +1,22 @@
-import { PublicKey } from "@solana/web3.js";
-import { BN } from "@coral-xyz/anchor";
+import { PublicKey } from '@solana/web3.js';
+import { BN } from '@coral-xyz/anchor';
 
 export enum CapsuleStatus {
-  Active = "active",
-  OpenForVoting = "openForVoting",
-  Resolved = "resolved",
-  Cancelled = "cancelled",
+  Active = 'active',
+  OpenForVoting = 'openForVoting',
+  Resolved = 'resolved',
+  Cancelled = 'cancelled',
 }
 
 export enum CapsuleResult {
-  Success = "success",
-  Failure = "failure",
+  Success = 'success',
+  Failure = 'failure',
 }
 
 export enum StakeDestination {
-  CommunityPool = "communityPool",
-  Charity = "charity",
-  TopVoters = "topVoters",
-  ReturnToCreator = "returnToCreator",
+  CommunityPool = 'communityPool',
+  Charity = 'charity',
+  ReturnToCreator = 'returnToCreator',
 }
 
 export interface CapsuleAccount {
@@ -83,13 +82,16 @@ export interface ParsedCapsule {
 
 export function getCapsuleStatus(account: CapsuleAccount): CapsuleStatus {
   if (account.status.active !== undefined) return CapsuleStatus.Active;
-  if (account.status.openForVoting !== undefined) return CapsuleStatus.OpenForVoting;
+  if (account.status.openForVoting !== undefined)
+    return CapsuleStatus.OpenForVoting;
   if (account.status.resolved !== undefined) return CapsuleStatus.Resolved;
   if (account.status.cancelled !== undefined) return CapsuleStatus.Cancelled;
   return CapsuleStatus.Active;
 }
 
-export function getCapsuleResult(account: CapsuleAccount): CapsuleResult | undefined {
+export function getCapsuleResult(
+  account: CapsuleAccount
+): CapsuleResult | undefined {
   if (!account.result) return undefined;
   if (account.result.success !== undefined) return CapsuleResult.Success;
   if (account.result.failure !== undefined) return CapsuleResult.Failure;
@@ -97,9 +99,9 @@ export function getCapsuleResult(account: CapsuleAccount): CapsuleResult | undef
 }
 
 export function getStakeDestination(account: CapsuleAccount): StakeDestination {
-  if (account.stakeDestination.communityPool !== undefined) return StakeDestination.CommunityPool;
-  if (account.stakeDestination.charity !== undefined) return StakeDestination.Charity;
-  if (account.stakeDestination.topVoters !== undefined) return StakeDestination.TopVoters;
+  if (account.stakeDestination.communityPool !== undefined)
+    return StakeDestination.CommunityPool;
+  if (account.stakeDestination.charity !== undefined)
+    return StakeDestination.Charity;
   return StakeDestination.ReturnToCreator;
 }
-

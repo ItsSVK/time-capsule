@@ -264,7 +264,7 @@ export default function Home() {
 
                     return (
                       <motion.div key={address} variants={cardVariants}>
-                        <Link href={`/capsule/${address}`}>
+                        <Link href={`/capsules/${address}`}>
                           <Card className="group border-2 border-border/50 shadow-xl backdrop-blur-xl bg-card/95 overflow-hidden h-full hover:border-primary/50 transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]">
                             <div className="relative">
                               {/* Status gradient overlay */}

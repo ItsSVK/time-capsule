@@ -34,11 +34,6 @@ pub fn handler(ctx: Context<Claim>) -> Result<()> {
                 StakeDestination::CommunityPool | StakeDestination::Charity => {
                     capsule.destination_address.unwrap()
                 }
-                StakeDestination::TopVoters => {
-                    // For now, send to community pool
-                    // TODO: Implement voter reward distribution
-                    capsule.destination_address.unwrap()
-                }
             }
         }
     };

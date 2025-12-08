@@ -127,8 +127,6 @@ pub enum StakeDestination {
     CommunityPool,
     /// Sent to charity address
     Charity,
-    /// Distributed to voters
-    TopVoters,
     /// Returned to creator (for no-stake capsules)
     ReturnToCreator,
 }

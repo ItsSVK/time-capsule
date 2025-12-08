@@ -37,7 +37,6 @@ function formatStakeDestination(destination: StakeDestination): string {
   const labels: Record<StakeDestination, string> = {
     [StakeDestination.CommunityPool]: 'Community Pool',
     [StakeDestination.Charity]: 'Charity',
-    [StakeDestination.TopVoters]: 'Top Voters',
     [StakeDestination.ReturnToCreator]: 'Return to Creator',
   };
   return labels[destination] || destination;
@@ -55,6 +54,7 @@ export default function ReviewStep({ direction, formData }: ReviewStepProps) {
     quorum,
     stakeAmount,
     stakeDestination,
+    stakeDestinationAddress,
   } = formData;
 
   const hasFile = file && file.length > 0;
@@ -329,6 +329,17 @@ export default function ReviewStep({ direction, formData }: ReviewStepProps) {
                     : 'Not set'}
                 </p>
               </div>
+              {stakeDestinationAddress &&
+                stakeDestination !== StakeDestination.ReturnToCreator && (
+                  <div className="col-span-2">
+                    <p className="text-xs text-muted-foreground mb-1">
+                      Destination Address
+                    </p>
+                    <p className="text-sm font-mono text-foreground break-all">
+                      {stakeDestinationAddress}
+                    </p>
+                  </div>
+                )}
             </div>
           </motion.div>
         )}

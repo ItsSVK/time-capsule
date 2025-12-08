@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { toast } from 'sonner';
-import { LAMPORTS_PER_SOL } from '@solana/web3.js';
+import { PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js';
 import { FormData } from '../types';
 import { StakeDestination } from '@/lib/solana/types';
 import { useCapsuleActions } from '@/hooks/useCapsules';
@@ -89,11 +89,27 @@ export function useCapsuleSubmission() {
         const lamports = Math.floor(
           (data.stakeAmount as number) * LAMPORTS_PER_SOL
         );
+
+        let destinationAddr = publicKey;
+        if (data.stakeDestinationAddress) {
+          try {
+            destinationAddr = new PublicKey(data.stakeDestinationAddress);
+          } catch (e) {
+            console.error('Invalid destination address:', e);
+            toast.error('Invalid destination address');
+            setProgress(0);
+            setSubmitting(false);
+            setShowProgressBar(false);
+            return;
+          }
+        }
+
         setProgress(90);
         await addStake(
           capsulePda,
           lamports,
-          data.stakeDestination as StakeDestination
+          data.stakeDestination as StakeDestination,
+          destinationAddr
         );
       }
 

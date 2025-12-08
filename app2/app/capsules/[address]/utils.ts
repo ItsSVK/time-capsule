@@ -10,7 +10,6 @@ export function formatStakeDestination(destination: StakeDestination): string {
   const labels: Record<StakeDestination, string> = {
     [StakeDestination.CommunityPool]: 'Community Pool',
     [StakeDestination.Charity]: 'Charity',
-    [StakeDestination.TopVoters]: 'Top Voters',
     [StakeDestination.ReturnToCreator]: 'Return to Creator',
   };
   return labels[destination] || destination;
@@ -19,4 +18,3 @@ export function formatStakeDestination(destination: StakeDestination): string {
 export function truncateAddress(address: string): string {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
 }
-
