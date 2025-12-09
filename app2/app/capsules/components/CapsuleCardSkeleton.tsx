@@ -1,11 +1,13 @@
 'use client';
 
 import { Card, CardContent } from '@/components/ui/card';
-import { cardVariants } from '../[address]/constants';
+import { motion } from 'framer-motion';
+import { cardVariants } from './constants';
 
 export default function CapsuleCardSkeleton() {
   return (
-    <Card className="border-2 border-border/50 shadow-xl backdrop-blur-xl bg-card/95 overflow-hidden h-full">
+    <motion.div variants={cardVariants}>
+      <Card className="border-2 border-border/50 shadow-xl backdrop-blur-xl bg-card/95 overflow-hidden h-full">
       <div className="relative">
         {/* Image skeleton */}
         <div className="h-48 bg-muted/30 animate-pulse" />
@@ -43,5 +45,6 @@ export default function CapsuleCardSkeleton() {
         </CardContent>
       </div>
     </Card>
+    </motion.div>
   );
 }
