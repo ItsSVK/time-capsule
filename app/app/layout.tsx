@@ -1,24 +1,23 @@
 import type { Metadata } from 'next';
-import { Space_Grotesk, JetBrains_Mono } from 'next/font/google';
+import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
-import { SolanaProvider } from '@/lib/solana/provider';
 import { Header } from '@/components/Header';
-import { Toaster } from 'react-hot-toast';
+import { ThemeProvider } from '@/components/ThemeProvider';
+import { SolanaProviders } from '@/lib/solana/provider';
+import { Toaster } from 'sonner';
 
-const spaceGrotesk = Space_Grotesk({
-  variable: '--font-space-grotesk',
+const geistSans = Geist({
+  variable: '--font-geist-sans',
   subsets: ['latin'],
-  display: 'swap',
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  variable: '--font-jetbrains-mono',
+const geistMono = Geist_Mono({
+  variable: '--font-geist-mono',
   subsets: ['latin'],
-  display: 'swap',
 });
 
 export const metadata: Metadata = {
-  title: 'TimeCapsule | Lock Your Predictions on Solana',
+  title: 'Time Capsule | Lock Your Predictions on Solana',
   description:
     'Create time-locked capsules with predictions, goals, and commitments. Stake SOL for accountability. Community votes determine success.',
   keywords: [
@@ -29,6 +28,20 @@ export const metadata: Metadata = {
     'crypto',
     'dapp',
   ],
+  icons: {
+    icon: '/favicon.ico',
+  },
+  openGraph: {
+    title: 'Time Capsule | Lock Your Predictions on Solana',
+    description:
+      'Create time-locked capsules with predictions, goals, and commitments. Stake SOL for accountability. Community votes determine success.',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Time Capsule | Lock Your Predictions on Solana',
+    description:
+      'Create time-locked capsules with predictions, goals, and commitments. Stake SOL for accountability. Community votes determine success.',
+  },
 };
 
 export default function RootLayout({
@@ -37,44 +50,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} font-sans antialiased bg-black text-white min-h-screen`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background font-sans`}
         suppressHydrationWarning
       >
-        <SolanaProvider>
-          {/* Background gradient */}
-          <div className="fixed inset-0 -z-10">
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-violet-900/20 via-black to-black" />
-            <div className="absolute top-0 left-1/4 w-96 h-96 bg-violet-500/10 rounded-full blur-3xl" />
-            <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-fuchsia-500/10 rounded-full blur-3xl" />
-          </div>
-
-          <Header />
-          <main className="relative">{children}</main>
-          <Toaster
-            position="bottom-right"
-            toastOptions={{
-              style: {
-                background: '#18181b',
-                color: '#fff',
-                border: '1px solid #3f3f46',
-              },
-              success: {
-                iconTheme: {
-                  primary: '#10b981',
-                  secondary: '#fff',
-                },
-              },
-              error: {
-                iconTheme: {
-                  primary: '#ef4444',
-                  secondary: '#fff',
-                },
-              },
-            }}
-          />
-        </SolanaProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <SolanaProviders>
+            <Header />
+            {children}
+          </SolanaProviders>
+        </ThemeProvider>
+        <Toaster position="bottom-right" richColors />
       </body>
     </html>
   );

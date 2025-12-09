@@ -1,5 +1,5 @@
 {
-  "address": "BWRB15yyv6d6sbv9sq3GZxs1ptvE49QfZhzVx4n4UycJ",
+  "address": "7RVNQ4L34XRZ2DtKgbeahAQNRGzyoWJjJpHwVkfzPgkK",
   "metadata": {
     "name": "time_capsule",
     "version": "0.1.0",
@@ -9,16 +9,7 @@
   "instructions": [
     {
       "name": "add_stake",
-      "discriminator": [
-        58,
-        135,
-        189,
-        105,
-        160,
-        120,
-        165,
-        224
-      ],
+      "discriminator": [58, 135, 189, 105, 160, 120, 165, 224],
       "accounts": [
         {
           "name": "capsule",
@@ -27,15 +18,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  99,
-                  97,
-                  112,
-                  115,
-                  117,
-                  108,
-                  101
-                ]
+                "value": [99, 97, 112, 115, 117, 108, 101]
               },
               {
                 "kind": "account",
@@ -56,14 +39,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  101,
-                  115,
-                  99,
-                  114,
-                  111,
-                  119
-                ]
+                "value": [101, 115, 99, 114, 111, 119]
               },
               {
                 "kind": "account",
@@ -79,9 +55,7 @@
           "name": "creator",
           "writable": true,
           "signer": true,
-          "relations": [
-            "capsule"
-          ]
+          "relations": ["capsule"]
         },
         {
           "name": "creator_stake_account",
@@ -131,19 +105,8 @@
     },
     {
       "name": "cancel_capsule",
-      "docs": [
-        "Cancel capsule before it opens (creator only)"
-      ],
-      "discriminator": [
-        27,
-        143,
-        220,
-        25,
-        39,
-        186,
-        66,
-        214
-      ],
+      "docs": ["Cancel capsule before it opens (creator only)"],
+      "discriminator": [27, 143, 220, 25, 39, 186, 66, 214],
       "accounts": [
         {
           "name": "capsule",
@@ -152,15 +115,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  99,
-                  97,
-                  112,
-                  115,
-                  117,
-                  108,
-                  101
-                ]
+                "value": [99, 97, 112, 115, 117, 108, 101]
               },
               {
                 "kind": "account",
@@ -183,14 +138,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  101,
-                  115,
-                  99,
-                  114,
-                  111,
-                  119
-                ]
+                "value": [101, 115, 99, 114, 111, 119]
               },
               {
                 "kind": "account",
@@ -227,19 +175,8 @@
     },
     {
       "name": "cast_vote",
-      "docs": [
-        "Cast a vote on an open capsule"
-      ],
-      "discriminator": [
-        20,
-        212,
-        15,
-        189,
-        69,
-        180,
-        69,
-        151
-      ],
+      "docs": ["Cast a vote on an open capsule"],
+      "discriminator": [20, 212, 15, 189, 69, 180, 69, 151],
       "accounts": [
         {
           "name": "capsule",
@@ -248,15 +185,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  99,
-                  97,
-                  112,
-                  115,
-                  117,
-                  108,
-                  101
-                ]
+                "value": [99, 97, 112, 115, 117, 108, 101]
               },
               {
                 "kind": "account",
@@ -278,13 +207,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  118,
-                  111,
-                  116,
-                  101,
-                  114
-                ]
+                "value": [118, 111, 116, 101, 114]
               },
               {
                 "kind": "account",
@@ -316,35 +239,17 @@
     },
     {
       "name": "claim",
-      "docs": [
-        "Claim stake from escrow after resolution"
-      ],
-      "discriminator": [
-        62,
-        198,
-        214,
-        193,
-        213,
-        159,
-        108,
-        210
-      ],
+      "docs": ["Claim stake from escrow after resolution"],
+      "discriminator": [62, 198, 214, 193, 213, 159, 108, 210],
       "accounts": [
         {
           "name": "capsule",
+          "writable": true,
           "pda": {
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  99,
-                  97,
-                  112,
-                  115,
-                  117,
-                  108,
-                  101
-                ]
+                "value": [99, 97, 112, 115, 117, 108, 101]
               },
               {
                 "kind": "account",
@@ -366,14 +271,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  101,
-                  115,
-                  99,
-                  114,
-                  111,
-                  119
-                ]
+                "value": [101, 115, 99, 114, 111, 119]
               },
               {
                 "kind": "account",
@@ -410,16 +308,7 @@
       "docs": [
         "Close a capsule account and reclaim rent (creator only, after resolution/cancellation)"
       ],
-      "discriminator": [
-        16,
-        246,
-        167,
-        171,
-        45,
-        72,
-        171,
-        122
-      ],
+      "discriminator": [16, 246, 167, 171, 45, 72, 171, 122],
       "accounts": [
         {
           "name": "capsule",
@@ -428,15 +317,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  99,
-                  97,
-                  112,
-                  115,
-                  117,
-                  108,
-                  101
-                ]
+                "value": [99, 97, 112, 115, 117, 108, 101]
               },
               {
                 "kind": "account",
@@ -465,19 +346,8 @@
     },
     {
       "name": "initialize_capsule",
-      "docs": [
-        "Create a new time capsule with optional stake"
-      ],
-      "discriminator": [
-        34,
-        7,
-        219,
-        18,
-        171,
-        130,
-        53,
-        5
-      ],
+      "docs": ["Create a new time capsule with optional stake"],
+      "discriminator": [34, 7, 219, 18, 171, 130, 53, 5],
       "accounts": [
         {
           "name": "capsule",
@@ -486,15 +356,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  99,
-                  97,
-                  112,
-                  115,
-                  117,
-                  108,
-                  101
-                ]
+                "value": [99, 97, 112, 115, 117, 108, 101]
               },
               {
                 "kind": "account",
@@ -514,16 +376,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  110,
-                  102,
-                  116,
-                  95,
-                  109,
-                  105,
-                  110,
-                  116
-                ]
+                "value": [110, 102, 116, 95, 109, 105, 110, 116]
               },
               {
                 "kind": "account",
@@ -544,38 +397,9 @@
               {
                 "kind": "const",
                 "value": [
-                  6,
-                  221,
-                  246,
-                  225,
-                  215,
-                  101,
-                  161,
-                  147,
-                  217,
-                  203,
-                  225,
-                  70,
-                  206,
-                  235,
-                  121,
-                  172,
-                  28,
-                  180,
-                  133,
-                  237,
-                  95,
-                  91,
-                  55,
-                  145,
-                  58,
-                  140,
-                  245,
-                  133,
-                  126,
-                  255,
-                  0,
-                  169
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206,
+                  235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169
                 ]
               },
               {
@@ -586,38 +410,9 @@
             "program": {
               "kind": "const",
               "value": [
-                140,
-                151,
-                37,
-                143,
-                78,
-                36,
-                137,
-                241,
-                187,
-                61,
-                16,
-                41,
-                20,
-                142,
-                13,
-                131,
-                11,
-                90,
-                19,
-                153,
-                218,
-                255,
-                16,
-                132,
-                4,
-                142,
-                123,
-                216,
-                219,
-                233,
-                248,
-                89
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142,
+                13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123, 216,
+                219, 233, 248, 89
               ]
             }
           }
@@ -681,19 +476,8 @@
     },
     {
       "name": "open_for_voting",
-      "docs": [
-        "Open capsule for voting after timestamp passes"
-      ],
-      "discriminator": [
-        6,
-        79,
-        198,
-        136,
-        123,
-        80,
-        85,
-        74
-      ],
+      "docs": ["Open capsule for voting after timestamp passes"],
+      "discriminator": [6, 79, 198, 136, 123, 80, 85, 74],
       "accounts": [
         {
           "name": "capsule",
@@ -702,15 +486,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  99,
-                  97,
-                  112,
-                  115,
-                  117,
-                  108,
-                  101
-                ]
+                "value": [99, 97, 112, 115, 117, 108, 101]
               },
               {
                 "kind": "account",
@@ -730,19 +506,8 @@
     },
     {
       "name": "resolve_capsule",
-      "docs": [
-        "Resolve capsule after voting period ends"
-      ],
-      "discriminator": [
-        154,
-        205,
-        71,
-        207,
-        43,
-        162,
-        121,
-        254
-      ],
+      "docs": ["Resolve capsule after voting period ends"],
+      "discriminator": [154, 205, 71, 207, 43, 162, 121, 254],
       "accounts": [
         {
           "name": "capsule",
@@ -751,15 +516,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  99,
-                  97,
-                  112,
-                  115,
-                  117,
-                  108,
-                  101
-                ]
+                "value": [99, 97, 112, 115, 117, 108, 101]
               },
               {
                 "kind": "account",
@@ -781,135 +538,45 @@
   "accounts": [
     {
       "name": "Capsule",
-      "discriminator": [
-        212,
-        231,
-        77,
-        219,
-        58,
-        13,
-        118,
-        241
-      ]
+      "discriminator": [212, 231, 77, 219, 58, 13, 118, 241]
     },
     {
       "name": "Escrow",
-      "discriminator": [
-        31,
-        213,
-        123,
-        187,
-        186,
-        22,
-        218,
-        155
-      ]
+      "discriminator": [31, 213, 123, 187, 186, 22, 218, 155]
     },
     {
       "name": "VoterRecord",
-      "discriminator": [
-        178,
-        96,
-        138,
-        116,
-        143,
-        202,
-        115,
-        33
-      ]
+      "discriminator": [178, 96, 138, 116, 143, 202, 115, 33]
     }
   ],
   "events": [
     {
       "name": "CapsuleCancelled",
-      "discriminator": [
-        11,
-        147,
-        140,
-        123,
-        217,
-        137,
-        169,
-        189
-      ]
+      "discriminator": [11, 147, 140, 123, 217, 137, 169, 189]
     },
     {
       "name": "CapsuleClosed",
-      "discriminator": [
-        83,
-        146,
-        25,
-        18,
-        69,
-        238,
-        40,
-        24
-      ]
+      "discriminator": [83, 146, 25, 18, 69, 238, 40, 24]
     },
     {
       "name": "CapsuleCreated",
-      "discriminator": [
-        113,
-        132,
-        247,
-        198,
-        217,
-        47,
-        201,
-        223
-      ]
+      "discriminator": [113, 132, 247, 198, 217, 47, 201, 223]
     },
     {
       "name": "CapsuleOpened",
-      "discriminator": [
-        14,
-        230,
-        127,
-        35,
-        13,
-        119,
-        62,
-        218
-      ]
+      "discriminator": [14, 230, 127, 35, 13, 119, 62, 218]
     },
     {
       "name": "CapsuleResolved",
-      "discriminator": [
-        179,
-        218,
-        111,
-        191,
-        113,
-        59,
-        206,
-        170
-      ]
+      "discriminator": [179, 218, 111, 191, 113, 59, 206, 170]
     },
     {
       "name": "StakeClaimed",
-      "discriminator": [
-        231,
-        124,
-        83,
-        169,
-        100,
-        57,
-        96,
-        131
-      ]
+      "discriminator": [231, 124, 83, 169, 100, 57, 96, 131]
     },
     {
       "name": "VoteCast",
-      "discriminator": [
-        39,
-        53,
-        195,
-        104,
-        188,
-        17,
-        225,
-        213
-      ]
+      "discriminator": [39, 53, 195, 104, 188, 17, 225, 213]
     }
   ],
   "errors": [
@@ -992,66 +659,48 @@
   "types": [
     {
       "name": "Capsule",
-      "docs": [
-        "Capsule state - stores all information about a time capsule"
-      ],
+      "docs": ["Capsule state - stores all information about a time capsule"],
       "type": {
         "kind": "struct",
         "fields": [
           {
             "name": "creator",
-            "docs": [
-              "Creator of the capsule (original owner)"
-            ],
+            "docs": ["Creator of the capsule (original owner)"],
             "type": "pubkey"
           },
           {
             "name": "owner",
-            "docs": [
-              "Current owner of the NFT"
-            ],
+            "docs": ["Current owner of the NFT"],
             "type": "pubkey"
           },
           {
             "name": "nft_mint",
-            "docs": [
-              "NFT mint address"
-            ],
+            "docs": ["NFT mint address"],
             "type": "pubkey"
           },
           {
             "name": "metadata_uri",
-            "docs": [
-              "URI pointing to metadata (IPFS)"
-            ],
+            "docs": ["URI pointing to metadata (IPFS)"],
             "type": "string"
           },
           {
             "name": "open_timestamp",
-            "docs": [
-              "Timestamp when capsule can be opened for voting"
-            ],
+            "docs": ["Timestamp when capsule can be opened for voting"],
             "type": "i64"
           },
           {
             "name": "voting_end_timestamp",
-            "docs": [
-              "Timestamp when voting period ends"
-            ],
+            "docs": ["Timestamp when voting period ends"],
             "type": "i64"
           },
           {
             "name": "voting_duration",
-            "docs": [
-              "Duration of voting period in seconds"
-            ],
+            "docs": ["Duration of voting period in seconds"],
             "type": "i64"
           },
           {
             "name": "status",
-            "docs": [
-              "Current status of the capsule"
-            ],
+            "docs": ["Current status of the capsule"],
             "type": {
               "defined": {
                 "name": "CapsuleStatus"
@@ -1060,44 +709,32 @@
           },
           {
             "name": "yes_votes",
-            "docs": [
-              "Number of yes votes"
-            ],
+            "docs": ["Number of yes votes"],
             "type": "u64"
           },
           {
             "name": "no_votes",
-            "docs": [
-              "Number of no votes"
-            ],
+            "docs": ["Number of no votes"],
             "type": "u64"
           },
           {
             "name": "quorum",
-            "docs": [
-              "Minimum votes required for resolution"
-            ],
+            "docs": ["Minimum votes required for resolution"],
             "type": "u64"
           },
           {
             "name": "stake_amount",
-            "docs": [
-              "Optional stake amount"
-            ],
+            "docs": ["Optional stake amount"],
             "type": "u64"
           },
           {
             "name": "stake_mint",
-            "docs": [
-              "Mint of the staked token (System Program for SOL)"
-            ],
+            "docs": ["Mint of the staked token (System Program for SOL)"],
             "type": "pubkey"
           },
           {
             "name": "stake_destination",
-            "docs": [
-              "Where stake goes on failure"
-            ],
+            "docs": ["Where stake goes on failure"],
             "type": {
               "defined": {
                 "name": "StakeDestination"
@@ -1106,18 +743,14 @@
           },
           {
             "name": "destination_address",
-            "docs": [
-              "Destination address for charity/community pool"
-            ],
+            "docs": ["Destination address for charity/community pool"],
             "type": {
               "option": "pubkey"
             }
           },
           {
             "name": "result",
-            "docs": [
-              "Result after resolution"
-            ],
+            "docs": ["Result after resolution"],
             "type": {
               "option": {
                 "defined": {
@@ -1128,9 +761,7 @@
           },
           {
             "name": "bump",
-            "docs": [
-              "Bump seed for PDA"
-            ],
+            "docs": ["Bump seed for PDA"],
             "type": "u8"
           }
         ]
@@ -1138,9 +769,7 @@
     },
     {
       "name": "CapsuleCancelled",
-      "docs": [
-        "Emitted when a capsule is cancelled"
-      ],
+      "docs": ["Emitted when a capsule is cancelled"],
       "type": {
         "kind": "struct",
         "fields": [
@@ -1161,9 +790,7 @@
     },
     {
       "name": "CapsuleClosed",
-      "docs": [
-        "Emitted when a capsule account is closed"
-      ],
+      "docs": ["Emitted when a capsule account is closed"],
       "type": {
         "kind": "struct",
         "fields": [
@@ -1184,9 +811,7 @@
     },
     {
       "name": "CapsuleCreated",
-      "docs": [
-        "Emitted when a new capsule is created"
-      ],
+      "docs": ["Emitted when a new capsule is created"],
       "type": {
         "kind": "struct",
         "fields": [
@@ -1219,9 +844,7 @@
     },
     {
       "name": "CapsuleOpened",
-      "docs": [
-        "Emitted when a capsule is opened for voting"
-      ],
+      "docs": ["Emitted when a capsule is opened for voting"],
       "type": {
         "kind": "struct",
         "fields": [
@@ -1238,9 +861,7 @@
     },
     {
       "name": "CapsuleResolved",
-      "docs": [
-        "Emitted when a capsule is resolved"
-      ],
+      "docs": ["Emitted when a capsule is resolved"],
       "type": {
         "kind": "struct",
         "fields": [
@@ -1269,9 +890,7 @@
     },
     {
       "name": "CapsuleResult",
-      "docs": [
-        "Result of capsule resolution"
-      ],
+      "docs": ["Result of capsule resolution"],
       "type": {
         "kind": "enum",
         "variants": [
@@ -1286,9 +905,7 @@
     },
     {
       "name": "CapsuleStatus",
-      "docs": [
-        "Capsule lifecycle status"
-      ],
+      "docs": ["Capsule lifecycle status"],
       "type": {
         "kind": "enum",
         "variants": [
@@ -1309,38 +926,28 @@
     },
     {
       "name": "Escrow",
-      "docs": [
-        "Escrow account holding staked tokens"
-      ],
+      "docs": ["Escrow account holding staked tokens"],
       "type": {
         "kind": "struct",
         "fields": [
           {
             "name": "capsule",
-            "docs": [
-              "Associated capsule"
-            ],
+            "docs": ["Associated capsule"],
             "type": "pubkey"
           },
           {
             "name": "amount",
-            "docs": [
-              "Amount held in escrow"
-            ],
+            "docs": ["Amount held in escrow"],
             "type": "u64"
           },
           {
             "name": "mint",
-            "docs": [
-              "Token mint"
-            ],
+            "docs": ["Token mint"],
             "type": "pubkey"
           },
           {
             "name": "bump",
-            "docs": [
-              "Bump seed"
-            ],
+            "docs": ["Bump seed"],
             "type": "u8"
           }
         ]
@@ -1348,9 +955,7 @@
     },
     {
       "name": "StakeClaimed",
-      "docs": [
-        "Emitted when stake is claimed"
-      ],
+      "docs": ["Emitted when stake is claimed"],
       "type": {
         "kind": "struct",
         "fields": [
@@ -1371,9 +976,7 @@
     },
     {
       "name": "StakeDestination",
-      "docs": [
-        "Where stake goes on failure"
-      ],
+      "docs": ["Where stake goes on failure"],
       "type": {
         "kind": "enum",
         "variants": [
@@ -1394,9 +997,7 @@
     },
     {
       "name": "VoteCast",
-      "docs": [
-        "Emitted when a vote is cast"
-      ],
+      "docs": ["Emitted when a vote is cast"],
       "type": {
         "kind": "struct",
         "fields": [
@@ -1425,45 +1026,33 @@
     },
     {
       "name": "VoterRecord",
-      "docs": [
-        "Voter record to prevent double voting"
-      ],
+      "docs": ["Voter record to prevent double voting"],
       "type": {
         "kind": "struct",
         "fields": [
           {
             "name": "capsule",
-            "docs": [
-              "Capsule being voted on"
-            ],
+            "docs": ["Capsule being voted on"],
             "type": "pubkey"
           },
           {
             "name": "voter",
-            "docs": [
-              "Voter's wallet"
-            ],
+            "docs": ["Voter's wallet"],
             "type": "pubkey"
           },
           {
             "name": "vote",
-            "docs": [
-              "Vote cast (true = yes, false = no)"
-            ],
+            "docs": ["Vote cast (true = yes, false = no)"],
             "type": "bool"
           },
           {
             "name": "timestamp",
-            "docs": [
-              "Timestamp of vote"
-            ],
+            "docs": ["Timestamp of vote"],
             "type": "i64"
           },
           {
             "name": "bump",
-            "docs": [
-              "Bump seed"
-            ],
+            "docs": ["Bump seed"],
             "type": "u8"
           }
         ]

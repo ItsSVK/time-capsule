@@ -1,9 +1,9 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   /* config options here */
   turbopack: {
-    root: "/Users/shouvikmohanta/Developer/projects/time-capsule",
+    root: '/Users/shouvikmohanta/Developer/projects/time-capsule',
   },
 };
 

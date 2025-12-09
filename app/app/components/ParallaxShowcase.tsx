@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useMemo } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useScroll } from 'framer-motion';
 import ParallaxSection from './ParallaxSection';
 import { parallaxSections } from './constants';
@@ -12,18 +12,27 @@ export default function ParallaxShowcase() {
     offset: ['start start', 'end end'],
   });
 
-  // Generate particle positions once
-  const particles = useMemo(
-    () =>
+  const [particles, setParticles] = useState<
+    Array<{
+      id: number;
+      left: number;
+      top: number;
+      delay: number;
+      duration: number;
+    }>
+  >([]);
+
+  useEffect(() => {
+    setParticles(
       Array.from({ length: 20 }, (_, i) => ({
         id: i,
         left: Math.random() * 100,
         top: Math.random() * 100,
         delay: Math.random() * 2,
         duration: 3 + Math.random() * 2,
-      })),
-    []
-  );
+      }))
+    );
+  }, []);
 
   return (
     <div
@@ -44,4 +53,3 @@ export default function ParallaxShowcase() {
     </div>
   );
 }
-
